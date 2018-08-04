@@ -1,0 +1,44 @@
+
+	<%- include ../templates/sidenav.ejs %>
+
+	<div class="ui pusher">
+		
+		<div>
+			<h1 style="float: left;" class="ui dividing header">Órgãos</h1>
+			<a style="float: right;" href="/orgaos/new" class="ui secondary basic button">Adicionar</a>
+		</div>
+
+		<form method="post" action="/orgaos/delete">
+			<table class="ui celled table uitable">
+
+			    <thead>
+			      <tr class="center aligned">
+			          <th>Nome</th>
+			          <th>Descrição</th>
+			          <th>Deletar</th>
+					  <th>Editar</th>
+					  <th>Ver</th>
+			      </tr>
+			    </thead>
+
+			    <tbody>
+				<% for(var i = 0; i < orgaos.length; i++) {%>
+			    
+			      <tr class="center aligned">
+			        <td><%= orgaos[i].org_nome %></td>
+			        <td><%= orgaos[i].org_descricao %></td>
+			    	<td><button name="id_orgao" type="submit" value=<%= orgaos[i].org_idorgao %> class="ui red button">Excluir</button></td>
+					
+					<td><a name="id_desordem" href="/orgaos/<%= orgaos[i].org_idorgao %>/edit" class="ui gray button">Editar</a></td>
+						
+					<td><a name="id_usuario" href="/orgaos/<%= orgaos[i].org_idorgao %>/show" class="ui gray button">Ver</a></td>
+			      </tr>
+
+			    <% } %>
+			    </tbody>
+			</table>
+			
+		</form>
+	</div>
+	
+	<%- include ../templates/bottom.ejs %>

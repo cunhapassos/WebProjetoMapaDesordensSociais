@@ -1,0 +1,23 @@
+
+    <%- include ../templates/sidenav.ejs %>
+
+    <div class="ui pusher">
+        
+        <h1 class="ui dividing header">Órgão nº <%= orgao.org_idorgao %></h1>
+        <table>
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+
+            <tr>
+                <td><strong>Nome: </strong><%= orgao.org_nome %></td>
+            </tr>
+            <tr>
+                <td><strong>Descrição:</strong> <%= orgao.org_descricao %></td>
+            </tr>
+        </table>
+
+    </div>
+
+    <%- include ../templates/bottom.ejs %>

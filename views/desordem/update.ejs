@@ -1,0 +1,40 @@
+
+<%- include ../templates/sidenav.ejs %>
+
+ <div class="row" id="fora_sidenav" style="margin-bottom: 0;">
+    <form class="ui form" method="post" action="/desordens/<%= desordem.des_iddesordem %>?_method=PUT">
+      <div class="field">
+        
+          <label for="first_name">Tipo</label>
+          <input value="<%= desordem.des_tipo %>" name="tipo" type="text" class="validate">
+
+      </div>
+      
+      <div class="field">
+        
+          <label for="first_name">Descrição</label>
+          <textarea  name="descricao" type="text"  class="materialize-textarea"><%= desordem.des_tipo %></textarea>
+
+      </div>
+      <div class="field">
+        
+        <label>Orgão</label>
+        <select name="orgao">
+          <option value="" disabled selected>Qual órgao</option>
+          <% if(orgaos){ 
+              for(var i = 0; i < orgaos.length; i++){%>
+                  <% if(orgaos[i].org_idorgao == desordem.org_idorgao){ %>
+                    <option value=<%= orgaos[i].org_idorgao %> selected ><%= orgaos[i].org_nome %></option>
+                  <% }else{ %>
+                  <option value=<%= orgaos[i].org_idorgao %> ><%= orgaos[i].org_nome %></option>
+              <% }}} %>
+        </select>
+
+        </div>
+
+        <button class="ui primary button" type="submit" name="action">Submit</button>
+
+      </form>
+  </div>
+    
+<%- include ../templates/bottom.ejs %>

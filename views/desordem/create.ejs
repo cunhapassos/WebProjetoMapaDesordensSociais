@@ -1,0 +1,45 @@
+
+    
+  <%- include ../templates/sidenav.ejs %>
+ 
+ <div class="ui pusher">
+    <h1 class="ui dividing header">Nova Desordem</h1>
+    <form class="ui form" method="post" action="/desordem/create">
+      <div class="field">
+        
+          <label for="first_name">Tipo</label>
+          <!-- <input placeholder="tipo" name="tipo" type="text" class="validate"> -->
+          <select name="tipo">
+            <% if(tipos){ 
+              for(var i = 0; i < tipos.length; i++){%>
+                  <option value=<%= tipos[i].tde_idtipo_desordem %> ><%= tipos[i].tde_nome %></option>
+              <% }} %>
+          </select>
+      </div>
+
+      <div class="field">
+        
+          <label for="first_name">Descrição</label>
+          <textarea  placeholder="descrição" name="descricao" type="text"  class="materialize-textarea"></textarea>
+        
+      </div>
+      <div class="field">
+        
+        <label>Orgão</label>
+        <select name="orgao">
+          <option value="" disabled selected>Qual órgao</option>
+          <% if(orgaos){ 
+            for(var i = 0; i < orgaos.length; i++){%>
+              <option value=<%= orgaos[i].org_idorgao %> ><%= orgaos[i].org_nome %></option>
+              <% }} %>
+            </select>
+          </div>
+          <div class="field">
+            <button class="ui primary button" type="submit" name="action">Salvar</button>
+          </div>
+    </div>
+
+    </form>
+  </div>
+    
+<%- include ../templates/bottom.ejs %>

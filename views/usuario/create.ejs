@@ -1,0 +1,76 @@
+    
+<%- include ../templates/sidenav.ejs %>
+
+ <div class="ui pusher">
+    <h1 class="ui dividing header">Cadastrar novo usuário</h1>
+    <form class="ui form" method="post" action="/usuarios">
+      
+      <div class="field">
+        
+          <label for="first_name">Nome</label>
+          <input placeholder="Nome" name="nome" type="text" class="validate">
+        
+      </div>
+      <div class="field">
+        
+          <label>Email</label>
+          <input placeholder="Email" name="email" type="email" class="validate">
+        
+      </div>
+      <div class="field">
+        
+          <label>Login</label>
+          <input placeholder="Login" name="login" type="text" class="validate">
+        
+      </div>
+      <div class="field">
+        
+          <label>Senha</label>
+          <input placeholder="Senha" name="senha" type="password" class="validate">
+        
+      </div>
+      <div class="field">
+        
+          <label>Confiabilidade</label>
+          <input placeholder="Confiabilidade" name="confia" type="number" class="validate">
+        
+      </div>
+      <div class="field">
+        
+        <label>Tipo</label>
+        <select name="tipo" class="validate">
+            <option value="" disabled selected>Selecione o tipo</option>
+            <% 
+            for(var i = 0; i < tipos.length; i++){%>
+                <option value="<%= tipos[i].tus_idtipo %>"><%= tipos[i].tus_nome %></option>
+            <% } %>
+        </select>
+        
+      </div>
+      <div class="field">
+        
+          <label>Data de nascimento</label>
+          <input type="text" placeholder="dd/mm/aaaa" name="nascimento" class="date">
+        
+      </div>
+      <div class="field">
+        
+          <label>CPF</label>
+          <input placeholder="000.000.000-00" name="cpf" type="text" class="cpf validate">
+        
+      </div>
+      <div class="field">
+        
+          <label>Telefone</label>
+          <input placeholder="(00) 00000-0000" name="telefone" type="text" class="phone validate">
+        
+      </div>
+      <div class="field">
+        <br>
+        <button class="ui primary button" type="submit" name="action">Salvar</button>
+      </div>
+      <br>
+    </form>
+  </div>
+    
+  <%- include ../templates/bottom.ejs %>

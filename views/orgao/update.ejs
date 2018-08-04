@@ -1,0 +1,27 @@
+
+    
+  <%- include ../templates/sidenav.ejs %>
+
+ <div class="ui pusher">
+    <h1 class="ui dividing header">Editar Órgão</h1>
+    <form class="ui form" method="post" action="/orgaos/<%= orgao.org_idorgao %>?_method=PUT">
+      <div class="field">
+        
+          <label for="first_name">Nome</label>
+          <input value=<%= orgao.org_nome %> name="nome" type="text" class="validate">
+        
+      </div>
+      <div class="field">
+          <label>Descrição</label>
+          <textarea  name="descricao" type="text"  class="materialize-textarea"><%= orgao.org_descricao %></textarea>
+        
+      </div>
+
+      <div class="field">
+        <button class="ui primary button" type="submit" name="action">Submit
+        </button>
+      </div>
+    </form>
+  </div>
+    
+  <%- include ../templates/bottom.ejs %>

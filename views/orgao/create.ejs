@@ -1,0 +1,26 @@
+
+    
+  <%- include ../templates/sidenav.ejs %>
+
+ <div class="ui pusher">
+    <h1 class="ui dividing header">Novo Órgão</h1>
+    <form class="ui form" method="post" action="/orgaos">
+      <div class="field">
+        
+          <label for="first_name">Nome</label>
+          <input placeholder="Nome" name="nome" type="text" class="validate">
+        
+      </div>
+      <div class="field">
+        
+          <label for="first_name">Descrição</label>
+          <textarea  placeholder="descrição" name="descricao" type="text"  class="materialize-textarea"></textarea>
+        
+      </div>
+      <div class="field">
+        <button class="ui primary button" type="submit" name="action">Salvar</button>
+      </div>
+    </form>
+  </div>
+    
+<%- include ../templates/bottom.ejs %>

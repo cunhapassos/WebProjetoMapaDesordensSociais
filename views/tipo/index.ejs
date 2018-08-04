@@ -1,0 +1,42 @@
+
+	<%- include ../templates/sidenav.ejs %>	
+
+	<div class="ui pusher">
+		<div>
+			<h1 style="float: left;" class="ui dividing header">Tipos de Desordem</h1>
+			<a style="float: right;" href="/tipos/new" class="ui secondary basic button">Adicionar</a>
+		</div>
+		<form method="post" action="/tipos/delete">
+			<table class="ui celled table uitable">
+
+			    <thead>
+			      <tr class="center aligned">
+			          <th>Id</th>
+					  <th>Nome</th>
+			          <th>Descrição</th>
+					  <th>Remover</th>
+					  <th>Editar</th>
+			      </tr>
+			    </thead>
+
+			    <tbody>
+				<% for(var i = 0; i < tipos.length; i++) { %>
+			    
+			      <tr class="center aligned">
+			    	<td><%= tipos[i].tde_idtipo_desordem%></td>
+                    <td><%= tipos[i].tde_nome %></td>
+                    <td><%= tipos[i].tde_descricao %></td>
+
+			    	<td><button name="id_tipo" type="submit" value=<%= tipos[i].tde_idtipo_desordem %> class="ui red button">Excluir</button></td>
+					
+					<td><a name="id_usuario" href="/tipos/<%= tipos[i].tde_idtipo_desordem %>/edit" class="ui gray button">Editar</a></td>
+			      </tr>
+
+			    <% } %>
+			    </tbody>
+			</table>
+			
+		</form>
+
+	</div>
+	<%- include ../templates/bottom.ejs %>	
