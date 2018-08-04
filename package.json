@@ -4,7 +4,8 @@
   "description": "Sistema Web para tecnico e gestor",
   "main": "index.js",
     "engines": {
-    "node": "10.0.0"
+    "node": "10.0.0",
+    "npm": "6.3.0"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
