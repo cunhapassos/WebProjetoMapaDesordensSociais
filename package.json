@@ -20,6 +20,7 @@
     "nodemon": "^1.17.3",
     "npm": "^6.0.0",
     "pg": "^7.4.1",
+    "run-node": "^1.0.0",
     "semantic-ui": "^2.3.3",
     "socket.io": "^2.1.1",
     "tablesorter": "^2.30.7",
