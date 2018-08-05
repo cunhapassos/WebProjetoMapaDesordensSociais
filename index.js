@@ -45,10 +45,10 @@ var knex = require('knex')({
   client: 'pg',
   version: '10.3',
   connection: {
-    host : 'localhost',
+    host : '127.0.0.1' || 'localhost',
     user : 'postgres',
     password : 'postgres',
-    database : 'postgres://jwxsimyoqvdxew:5b045716d82e36a180af30cd8bbfd5ad6d2a3fecc2a6ae8db7f3e49f9242222c@ec2-54-221-210-97.compute-1.amazonaws.com:5432/d40ba6n3knjjq'
+    database : process.env.DATABASE_URL || 'ProjetoMDS'
   }
 });
 
@@ -165,6 +165,7 @@ app.use(gestorRouter);
 var server = http.createServer(app);
 app.io.attach(server);
 
+//inserido em 05/08/18 Paulo Passos
 var port = process.env.PORT || 3000;
 server.listen(port, () => {
 	console.log("server started");
