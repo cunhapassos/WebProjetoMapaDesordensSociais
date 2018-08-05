@@ -46,7 +46,7 @@ var knex = require('knex')({
   version: '10.3',
   connection: {
     host : '127.0.0.1' || 'localhost',
-    user : 'postgres',
+    user : 'paulopassos',
     password : '',
     database : process.env.DATABASE_URL || 'ProjetoMDS'
   }
@@ -97,7 +97,9 @@ app.post("/login", function(req,res){
 	var email = req.body.email;
 	
 	console.log(email);
-	senha = md5(senha);
+	console.log(senha);
+	//senha = md5(senha); // O banco ainda nao esta com as senhas em md5
+	//console.log(senha);
 
 	var name = 0;
 
