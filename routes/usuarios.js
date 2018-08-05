@@ -4,6 +4,10 @@ var router = express.Router({mergeParams : true});
 db = config.database;
 
 var knex = require('knex')(db);
+
+const pgconf = require('pg')
+pgconf.defaults.ssl = true
+
 monName = new Array ("janeiro", "fevereiro", "março", "abril", "maio", "junho", "agosto", "outubro", "novembro", "dezembro")
 
 router.get("/usuarios/new", function(req,res){

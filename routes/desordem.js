@@ -4,6 +4,9 @@ var config = require("../config/db.js");
 var router = express.Router({mergeParams : true});
 db = config.database;
 
+const pg = require('pg')
+pg.defaults.ssl = true
+
 var knex = require('knex')(db);
 
 
