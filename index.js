@@ -47,7 +47,7 @@ var knex = require('knex')({
   connection: {
     host : '127.0.0.1' || 'localhost',
     user : 'postgres',
-    password : 'postgres',
+    password : '',
     database : process.env.DATABASE_URL || 'ProjetoMDS'
   }
 });
