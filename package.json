@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Sistema Web para tecnico e gestor",
   "main": "index.js",
-  "engines": {
-    "node": "10.8.0",
-    "npm": "6.3.0"
-  },
+  "engines": { 
+    "node": "10.0.0", 
+    "npm": "6.0.0" 
+  }, 
   "dependencies": {
     "body-parser": "^1.18.2",
     "bulma": "^0.7.1",
@@ -22,10 +22,8 @@
     "md5": "^2.2.1",
     "method-override": "^2.3.10",
     "nodemon": "^1.17.3",
-    "npm": "^6.3.0",
+    "npm": "^6.0.0",
     "pg": "^7.4.1",
-    "run-node": "^1.0.0",
-    "gulp": "^3.8.8",
     "semantic-ui": "^2.3.3",
     "socket.io": "^2.1.1",
     "tablesorter": "^2.30.7",
