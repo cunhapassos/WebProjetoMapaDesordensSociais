@@ -42,7 +42,7 @@ app.use(session({
 
 //CONEXÃO COM O BANCO
 var knex = require('knex')({
-  client: 'pg',
+  client: 'postgresql'|| 'pg',
   version: '10.3',
   connection: {
     //host : '127.0.0.1' || 'localhost',
