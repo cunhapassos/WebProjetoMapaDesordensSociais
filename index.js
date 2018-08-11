@@ -115,7 +115,6 @@ app.post("/login", function(req,res){
 	}).select().then(function(usuario){
 		if(usuario.length <= 0){
 			res.render("login", {failed : 1});
-			res.send({token: "Criou"})
 		}
 		else{
 			sess = req.session;
@@ -127,6 +126,20 @@ app.post("/login", function(req,res){
 		}
 	});
 });
+
+app.post('/auth/login', function(req, res) {
+    User.findOne({ email: req.body.email }, '+password', function(err, user) {
+      if (!user) {
+        return res.status(401).send({ message: 'Invalid email and/or password' });
+      }
+      user.comparePassword(req.body.password, function(err, isMatch) {
+        if (!isMatch) {
+          return res.status(401).send({ message: 'Invalid email and/or password' });
+        }
+        res.send({ token: createJWT(user)});
+      });
+    });
+  });
 
 
 app.get("/admin", function(req,res){
