@@ -127,20 +127,27 @@ app.post("/login", function(req,res){
 	});
 });
 
-app.post('/auth/login', function(req, res) {
-    User.findOne({ email: req.body.email }, '+password', function(err, user) {
-      if (!user) {
-        return res.status(401).send({ message: 'Invalid email and/or password' });
-      }
-      user.comparePassword(req.body.password, function(err, isMatch) {
-        if (!isMatch) {
-          return res.status(401).send({ message: 'Invalid email and/or password' });
-        }
-        res.send({ token: createJWT(user)});
-      });
-    });
-  });
+app.post("/app/login", function(req,res){
 
+	var senha = req.body.password;
+	var email = req.body.email;
+	
+	console.log(email);
+	console.log(senha);
+
+
+	knex('usuario').where({
+		usu_email : email,
+		usu_senha : senha
+	}).select().then(function(usuario){
+		if(usuario.length <= 0){
+			res.send({sucesso: 'true'});
+		}
+		else{
+			res.send({sucesso: 'true'});
+		}
+	});
+});
 
 app.get("/admin", function(req,res){
 	sess = req.session;
