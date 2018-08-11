@@ -115,6 +115,7 @@ app.post("/login", function(req,res){
 	}).select().then(function(usuario){
 		if(usuario.length <= 0){
 			res.render("login", {failed : 1});
+			res.send({token: "Criou"})
 		}
 		else{
 			sess = req.session;
