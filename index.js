@@ -127,27 +127,7 @@ app.post("/login", function(req,res){
 	});
 });
 
-app.post("/app/login", function(req,res){
 
-	var senha = req.body.password;
-	var email = req.body.email;
-	
-	console.log(email);
-	console.log(senha);
-
-
-	knex('usuario').where({
-		usu_email : email,
-		usu_senha : senha
-	}).select().then(function(usuario){
-		if(usuario.length <= 0){
-			res.send({sucesso: 'true'});
-		}
-		else{
-			res.send({sucesso: 'true'});
-		}
-	});
-});
 
 app.get("/admin", function(req,res){
 	sess = req.session;
