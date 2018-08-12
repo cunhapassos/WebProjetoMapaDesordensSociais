@@ -178,13 +178,60 @@ router.post("/app/login", function(req,res){
 		usu_senha : senha
 	}).select().then(function(usuario){
 		if(usuario.length <= 0){
-			res.send({sucesso: 'true'});
+			res.send({sucesso: 'false'});
 		}
 		else{
 			res.send({sucesso: 'true'});
 		}
 	});
 });
+
+router.post("/app/usuarios/insert",function(req,res){
+	
+	var login = req.body.login;
+	var senha = req.body.senha;
+	var email = req.body.email;
+	var nascimento = req.body.nascimento;
+	var cpf = req.body.cpf.replace(/[^\d]+/g,''); //remove todos caracteres que nao sao digitos
+	var nome = req.body.nome;
+	var confia = req.body.confia;
+	var tipo = req.body.tipo;
+	var telefone = req.body.telefone.replace(/[^\d]+/g,''); //remove todos caracteres que nao sao digitos
+
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1; //January is 0!
+
+	var yyyy = today.getFullYear();
+	if(dd<10){
+	    dd='0'+dd;
+	} 
+	if(mm<10){
+	    mm='0'+mm;
+	} 
+	var today = dd+'/'+mm+'/'+yyyy;
+
+	knex('usuario').insert({
+		usu_login : login,
+		usu_senha : senha,
+		usu_email : email,
+		usu_nascimento : nascimento,
+		usu_cpf : cpf,
+		usu_nome : nome,
+		usu_confiabilidade : confia,
+		usu_tipo : tipo,
+		usu_telefone : telefone,
+		usu_data_cadastro : today
+	}).then(function(){
+		res.send({sucesso: 'true'});
+	}).catch(function(error){
+		console.log(error);
+		res.send({sucesso: 'false'});
+	});
+
+})
+
+
 function formatDate(date){
 	date = date.toLocaleDateString();
 			
