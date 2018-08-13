@@ -226,7 +226,7 @@ router.post("/app/usuarios/insert",function(req,res){
 		res.send({sucesso: 'true'});
 	}).catch(function(error){
 		console.log(error);
-		res.send({sucesso: 'false'});
+		res.send({sucesso: error});
 	});
 
 })
