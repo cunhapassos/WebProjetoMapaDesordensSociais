@@ -5,9 +5,6 @@ db = config.database;
 
 var knex = require('knex')(db);
 
-const pg = require('pg')
-pg.defaults.ssl = true
-
 router.get("/tipos", function(req,res){
 	sess = req.session;
     var tipos;
