@@ -23,12 +23,22 @@ router.get("/gestor", function(req,res){
             .select(knex.raw('COUNT(denuncia.den_iddenuncia) as count_den'))
             .groupBy('org_orgao.org_idorgao')
             .then(function(orgaoResult){
-                knex.select().from('desordem').then(function(desordemResult){
-                   
-                    
-                    var desordens = getDesordens();
-                    
-                    res.render("gestor/index", {denuncias : denunciaResult, orgaos : orgaoResult, desordens : desordemResult});
+                knex("denuncia")
+                .select("denuncia.den_datahora_registro")
+                .orderBy("den_datahora_registro", "asc")
+                .then(function(denunciasPorHoraResult){
+
+                    knex.select().from('desordem').then(function(desordemResult){
+                     
+                        var desordens = getDesordens();
+                        
+                        res.render("gestor/index", {
+                            denuncias : denunciaResult, 
+                            orgaos : orgaoResult, 
+                            desordens : desordemResult,
+                            denunciasPorHora: denunciasPorHoraResult
+                        });
+                    })
                 })	
             })
         })
