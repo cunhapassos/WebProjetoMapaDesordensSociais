@@ -191,7 +191,7 @@ router.post("/app/usuarios/insert",function(req,res){
 
 	var nascimento = req.body.nascimento;
 	ano = nascimento.substr(6,9)
-	mes = nascimento.substr(2,5) // Pegara /mes/, isso é, pega as barras também
+	mes = nascimento.substr(2,5) // Pegar /mes/, isso é, pega as barras também
 	dia = nascimento.substr(0,1)
 	nascimento = ano + mes + dia
 
