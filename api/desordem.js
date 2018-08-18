@@ -10,7 +10,6 @@ var knex = require('knex')(db);
 router.get("/api/desordem/new", function(req,res){
 	sess = req.session;
 
-	if(sess.email){
 		var orgaos_result;
 
 		knex.select().from('org_orgao').then(function(result){
@@ -21,9 +20,7 @@ router.get("/api/desordem/new", function(req,res){
                 })
 			})
 		})		
-	}else{
-		res.send("voce precisa se logar");
-	}
+	
 });
 
 router.post("/desordem/create",function(req,res){

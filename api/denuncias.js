@@ -26,14 +26,10 @@ router.get("/api/denuncias/:id/show", function(req, res){
 })
 
 router.get("/api/denuncias", function(req, res){
-    sess = req.session;
-
-    if(sess.email){
         knex.select().from("denuncia").then(function(result){
             knex.select().from("tipo_desordem").then(function(tipos){
                 knex.select().from("desordem").then(function(desordens){
                     // console.log("Desordens " + desordens[2].des_iddesordem);
-                    res.render("denuncia/index", {denuncias : result, filtro : req.query, tipos : tipos, desordens : desordens}); 
                     
                     res.json({
                         denuncias : result, 
@@ -44,9 +40,7 @@ router.get("/api/denuncias", function(req, res){
                 })
             })
         })
-    }else{
-        res.send("você precisa se logar");
-    }
+    
 })
 
 router.post("/denuncias", function(req, res){

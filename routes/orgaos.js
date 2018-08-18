@@ -5,9 +5,6 @@ db = config.database;
 
 var knex = require('knex')(db);
 
-const pg = require('pg')
-pg.defaults.ssl = true
-
 router.get("/orgaos/new", function(req,res){
 	sess = req.session;
 

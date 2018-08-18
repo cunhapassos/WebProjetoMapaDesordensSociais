@@ -19,6 +19,7 @@ var usuarioRouter = require("./routes/usuarios.js");
 var tipoRouter = require("./routes/tipos.js");
 var denunciaRouter = require("./routes/denuncias.js");
 var gestorRouter = require("./routes/gestor.js");
+var areaRouter = require("./routes/areas.js");
 
 //ROTAS api
 var ApidesordemRouter = require("./api/desordem.js");
@@ -52,10 +53,21 @@ app.use(session({
 }));
 
 //CONEXÃO COM O BANCO
-var knex = require('knex')({
-  client: 'pg',
-  connection: 'postgres://jwxsimyoqvdxew:5b045716d82e36a180af30cd8bbfd5ad6d2a3fecc2a6ae8db7f3e49f9242222c@ec2-54-221-210-97.compute-1.amazonaws.com:5432/d40ba6n3knjjq'
+// var knex = require('knex')({
+//   client: 'pg',
+//   connection: 'postgres://jwxsimyoqvdxew:5b045716d82e36a180af30cd8bbfd5ad6d2a3fecc2a6ae8db7f3e49f9242222c@ec2-54-221-210-97.compute-1.amazonaws.com:5432/d40ba6n3knjjq'
 
+// });
+
+var knex = require('knex')({
+	client: 'pg',
+	version: '10.3',
+	connection: {
+		host : 'localhost',
+		user : 'postgres',
+		password : 'postgres',
+		database : 'ProjetoMDS'
+	}
 });
 
 const st = knexPostgis(knex);
@@ -64,12 +76,7 @@ const st = knexPostgis(knex);
 app.get("/", function(req,res){
 	sess = req.session;
 	
-	if(sess.email){
-		redirect("admin");
-	}
-	else{
-		res.render('login', {failed : 0});
-	}
+	res.redirect("admin");
 	
 });
 
@@ -103,9 +110,7 @@ app.post("/login", function(req,res){
 	var email = req.body.email;
 	
 	console.log(email);
-	console.log(senha);
-	//senha = md5(senha); // O banco ainda nao esta com as senhas em md5
-	//console.log(senha);
+	senha = md5(senha);
 
 	var name = 0;
 
@@ -128,7 +133,6 @@ app.post("/login", function(req,res){
 });
 
 
-
 app.get("/admin", function(req,res){
 	sess = req.session;
 	
@@ -143,19 +147,12 @@ app.get("/admin", function(req,res){
 		polygons_result = result;
 	})
 
+	knex.raw('select ST_X(den_local_desordem),ST_Y(den_local_desordem), den_status, den_descricao, den_iddenuncia from denuncia').then(function(result){
+		sess = req.session;
+		res.render('admin', {pontos : result.rows, desordens : desordens_result, polygons : polygons_result, sess : sess, query : req.query});
+	});
 
-	if (sess.email) {
-		
-		knex.raw('select ST_X(den_local_desordem),ST_Y(den_local_desordem), den_status, den_descricao, den_iddenuncia from denuncia').then(function(result){
-			sess = req.session;
-			console.log(req.query)
-			res.render('admin', {pontos : result.rows, desordens : desordens_result, polygons : polygons_result, sess : sess, query : req.query});
-		});
 
-	}
-	else{
-		res.render("login", {failed : 0});
-	}
 });
 
 // GeoJSON Feature Collection
@@ -170,6 +167,7 @@ app.use(desordemRouter);
 app.use(usuarioRouter);
 app.use(tipoRouter);
 app.use(gestorRouter);
+app.use(areaRouter);
 
 app.use(ApidenunciaRouter);
 app.use(ApiorgaoRouter);	

@@ -6,19 +6,12 @@ db = config.database;
 var knex = require('knex')(db);
 
 router.get("/api/tipos", function(req,res){
-	sess = req.session;
+
     var tipos;
-
-    if(sess.email){
-
-        knex.select().from("tipo_desordem").then(function(result){
-            tipos = result;
-            res.json({tipos : tipos});
-        })
-
-    }else{
-        res.redirect("login");
-    }
+    knex.select().from("tipo_desordem").then(function(result){
+        tipos = result;
+        res.json({tipos : tipos});
+    })
 
 });
 
