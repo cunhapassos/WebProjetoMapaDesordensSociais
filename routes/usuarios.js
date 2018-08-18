@@ -206,7 +206,7 @@ router.post("/app/usuarios/insert",function(req,res){
 	if(mm<10){
 	    mm='0'+mm;
 	} 
-	var today = dd+'/'+mm+'/'+yyyy;
+	var today = yyyy+'/'+mm+'/'+dd;
 
 	knex('usuario').insert({
 		usu_login : login,
