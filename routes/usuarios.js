@@ -188,7 +188,13 @@ router.post("/app/usuarios/insert",function(req,res){
 	var login = req.body.login;
 	var senha = req.body.senha;
 	var email = req.body.email;
+
 	var nascimento = req.body.nascimento;
+	ano = nascimento.substr(6,9)
+	mes = nascimento.substr(2,5) // Pegara /mes/, isso é, pega as barras também
+	dia = nascimento.substr(0,1)
+	nascimento = ano + mes + dia
+
 	var cpf = req.body.cpf.replace(/[^\d]+/g,''); //remove todos caracteres que nao sao digitos
 	var nome = req.body.nome;
 	var confia = req.body.confia;
