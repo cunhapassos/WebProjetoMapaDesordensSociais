@@ -104,6 +104,37 @@ router.post("/denuncias", function(req, res){
     
 })
 
+router.post("/app/tipodedesordem", function(req, res){
+
+
+    knex.select().from("desordem").then(function(tipos){
+                
+        res.send({tipos : tipos});            
+    })
+
+});
+
+router.post("/app/inserir/tipodedesordem", function(req, res){
+
+    var tipo = req.body.tipo;
+    var orgao = req.body.orgao;
+    var descricao = req.body.descricao;
+
+    console.log(tipo);
+    console.log(orgao);
+    console.log(descricao);
+
+    knex('desordem').insert({
+        des_tipo: tipo,
+        des_descricao: descricao,
+        org_idorgao: orgao
+    }).then(function(){
+        res.send({sucesso: 'true'});
+    }).catch(function(error){
+        res.send({sucesso: 'ERRO'});
+    });
+});
+
 function formatDate(date){
 
     hora = date.getHours();
