@@ -4,7 +4,6 @@ var bodyParser = require('body-parser');
 var app = express(); //"app" criado para se usar o express
 var pg = require('knex')({client: 'pg'});
 var knexPostgis = require('knex-postgis');
-var session = require('express-session');
 var md5 = require('md5');
 var consign = require('consign');
 var methodOverride = require('method-override');
@@ -27,14 +26,6 @@ app.io = io;
 const pgconf = require('pg')
 pgconf.defaults.ssl = true
 
-//DEFININDO SESSION
-var sess;
-app.use(session({
-	secret : "shss",
-	proxy: true,
-    resave: true,
-    saveUninitialized: true
-}));
 
 //CONEXÃO COM O BANCO
  var knex = require('knex')({
@@ -58,16 +49,13 @@ const st = knexPostgis(knex);
 
 app.use("/api", require('./api/api-routes'));
 
-app.use("/", require('./routes/web-routes.js'));
+app.use("", require('./routes/web-routes.js'));
 
 // GeoJSON Feature Collection
 function FeatureCollection(){
     this.type = 'FeatureCollection';
     this.features = new Array();
 }
-
-
-
 
 var server = http.createServer(app);
 app.io.attach(server);

@@ -1,5 +1,21 @@
 var express = require('express');
 var router = express.Router();
+var session = require('express-session');
+
+var config = require("../config/db.js");
+db = config.database;
+var knex = require('knex')(db);
+
+
+//DEFININDO SESSION
+var sess;
+router.use(session({
+	secret : "shss",
+	proxy: true,
+    resave: true,
+    saveUninitialized: true
+}));
+
 
 
 //ROTAS
@@ -10,14 +26,6 @@ var tipoRouter = require("./tipos.js");
 var denunciaRouter = require("./denuncias.js");
 var gestorRouter = require("./gestor.js");
 var areaRouter = require("./areas.js");
-
-
-router.use("/", function(req,res){
-	sess = req.session;
-	
-	res.redirect("admin");
-	
-});
 
 router.get("/", function(req,res){
 	sess = req.session;
