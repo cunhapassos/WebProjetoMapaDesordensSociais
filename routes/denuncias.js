@@ -111,9 +111,9 @@ router.post("/denuncias", function(req, res){
 router.post("/app/tipodedesordem", function(req, res){
 
 
-    knex.select().from("desordem").then(function(tipos){
+    knex.select().from("desordem").orderBy("des_descricao").then(function(tipos){
                 
-        res.send({tipos : tipos});            
+        res.send(tipos);            
     })
 
 });
