@@ -6,7 +6,7 @@ db = config.database;
 var knex = require('knex')(db);
 monName = new Array ("janeiro", "fevereiro", "março", "abril", "maio", "junho", "agosto", "outubro", "novembro", "dezembro")
 
-router.get("/api/usuarios/new", function(req,res){
+router.get("/usuarios/new", function(req,res){
 	
 	sess = req.session;
 	if(sess.email){
@@ -20,22 +20,17 @@ router.get("/api/usuarios/new", function(req,res){
 
 });
 
-router.get("/api/usuarios", function(req,res){
-	sess =req.session;
+router.get("/usuarios", function(req,res){
 
-	if(sess.email){
-		var fotos;
+	var fotos;
 
-		knex.select().from("foto_usuario").then(function(result){
-			fotos = result;
-			knex.select().from("usuario").then(function(usuarios){
-				res.json({usuarios : usuarios, fotos : fotos});
-			})
+	knex.select().from("foto_usuario").then(function(result){
+		fotos = result;
+		knex.select().from("usuario").then(function(usuarios){
+			res.json({usuarios : usuarios, fotos : fotos});
 		})
+	})
 
-	}else{
-		res.redirect("../../login");
-	}
 })
 
 router.post("/usuarios",function(req,res){
@@ -95,47 +90,37 @@ router.post("/usuarios/delete", function(req,res){
 	})
 })
 
-router.get("/api/usuarios/:id/edit", function(req,res){
-	sess =req.session;
+router.get("/usuarios/:id/edit", function(req,res){
 
-	if(sess.email){
-		var id = req.params.id;
-		var usuarios;
+	var id = req.params.id;
+	var usuarios;
 
-		knex('usuario').where({usu_idusuario : id}).select().then(function(found){
-			res.json({usuario : found[0]})
-		});
-	}else{
-		res.redirect("../../login");
-	}
+	knex('usuario').where({usu_idusuario : id}).select().then(function(found){
+		res.json({usuario : found[0]})
+	});
 })
 
-router.get("/api/usuarios/:id/show", function(req,res){
-	sess =req.session;
+router.get("/usuarios/:id/show", function(req,res){
+	var id = req.params.id;
+	var usuarios;
+	var fotos;
 
-	if(sess.email){
-		var id = req.params.id;
-		var usuarios;
-		var fotos;
+	knex('usuario').where({usu_idusuario : id}).select().then(function(found){
+		var cpf = found[0].usu_cpf;
+		var telefone = found[0].usu_telefone;
+		var new_cpf;
+		new_cpf = cpf.substr(0, 3) + "." + cpf.substr(3,3) + "." + cpf.substr(6,3) + "-" + cpf.substr(9,2);
+		telefone = "(" + telefone.substr(0,2) + ") " + telefone.substr(2,5) + "-" + telefone.substr(7,4);
+		nascimento = formatDate(found[0].usu_nascimento);
+		cadastro = formatDate(found[0].usu_data_cadastro);
 
-		knex('usuario').where({usu_idusuario : id}).select().then(function(found){
-			var cpf = found[0].usu_cpf;
-			var telefone = found[0].usu_telefone;
-			var new_cpf;
-			new_cpf = cpf.substr(0, 3) + "." + cpf.substr(3,3) + "." + cpf.substr(6,3) + "-" + cpf.substr(9,2);
-			telefone = "(" + telefone.substr(0,2) + ") " + telefone.substr(2,5) + "-" + telefone.substr(7,4);
-			nascimento = formatDate(found[0].usu_nascimento);
-			cadastro = formatDate(found[0].usu_data_cadastro);
+		knex.select().from('foto_usuario').then(function(resp){
+			fotos = resp;
+			res.json({usuario : found[0], cpf : new_cpf, telefone : telefone, fotos : fotos, nascimento : nascimento, cadastro : cadastro})
+		})
+		
+	});
 
-			knex.select().from('foto_usuario').then(function(resp){
-				fotos = resp;
-				res.json({usuario : found[0], cpf : new_cpf, telefone : telefone, fotos : fotos, nascimento : nascimento, cadastro : cadastro})
-			})
-			
-		});
-	}else{
-		res.redirect("../../login");
-	}
 })
 
 

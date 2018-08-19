@@ -5,8 +5,7 @@ db = config.database;
 
 var knex = require('knex')(db);
 
-router.get("/api/denuncias/:id/show", function(req, res){
-    sess = req.session;
+router.get("/denuncias/:id/show", function(req, res){
 
     knex.raw('select ST_X(den_local_desordem),ST_Y(den_local_desordem), den_status, den_descricao, den_iddenuncia, den_iddesordem, den_idusuario,den_datahora_registro, den_datahora_ocorreu, den_datahora_solucao, den_status, den_nivel_confiabilidade, den_descricao, den_anonimato, usu_nome, des_descricao from denuncia inner join usuario on usu_idusuario = den_idusuario inner join desordem on des_iddesordem = den_iddesordem where den_iddenuncia = ' + req.params.id).then(function(result){
 
@@ -25,7 +24,7 @@ router.get("/api/denuncias/:id/show", function(req, res){
     
 })
 
-router.get("/api/denuncias", function(req, res){
+router.get("/denuncias", function(req, res){
         knex.select().from("denuncia").then(function(result){
             knex.select().from("tipo_desordem").then(function(tipos){
                 knex.select().from("desordem").then(function(desordens){

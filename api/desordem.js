@@ -7,19 +7,18 @@ db = config.database;
 var knex = require('knex')(db);
 
 
-router.get("/api/desordem/new", function(req,res){
-	sess = req.session;
+router.get("/desordem/new", function(req,res){
 
-		var orgaos_result;
+	var orgaos_result;
 
-		knex.select().from('org_orgao').then(function(result){
-			knex.select().from('tipo_desordem').then(function(tipos){
-                res.json({
-                    orgaos : result, 
-                    tipos : tipos
-                })
+	knex.select().from('org_orgao').then(function(result){
+		knex.select().from('tipo_desordem').then(function(tipos){
+			res.json({
+				orgaos : result, 
+				tipos : tipos
 			})
-		})		
+		})
+	})		
 	
 });
 
@@ -65,55 +64,45 @@ router.post("/desordem/delete", function(req,res){
 	})
 })
 
-router.get("/api/desordens/:id/edit", function(req,res){
-	sess =req.session;
+router.get("/desordens/:id/edit", function(req,res){
+	var id = req.params.id;
+	var orgaos;
 
-	if(sess.email){
-		var id = req.params.id;
-		var orgaos;
+	knex.select().from('org_orgao').then(function(found){
+		orgaos = found;
+	})
 
-		knex.select().from('org_orgao').then(function(found){
-			orgaos = found;
+	knex('desordem').where({des_iddesordem : id}).select().then(function(found){
+		res.json({
+			desordem : found[0], 
+			orgaos : orgaos
 		})
+	});
 
-		knex('desordem').where({des_iddesordem : id}).select().then(function(found){
-            res.json({
-                desordem : found[0], 
-                orgaos : orgaos
-            })
-		});
-	}else{
-		res.redirect("../../login");
-	}
 	// res.render("desordem_edit");
 })
 
-router.get("/api/desordens", function(req,res){
-	sess =req.session;
+router.get("/desordens", function(req,res){
 	var tipos;
 	var orgaos;
 	
-	if(sess.email){
-
 		
-		knex.select().from("tipo_desordem").then(function(found){
-			tipos = found;
-			knex.select().from("desordem").then(function(desordens){
-					knex.select().from("org_orgao").then(function(orgaos){
-                        res.json({
-                            desordens : desordens, 
-                            tipos : tipos, 
-                            orgaos : orgaos, 
-                            failed : req.query.failed, 
-                            id_desordem : req.query.id_desordem
-                        })
+	knex.select().from("tipo_desordem").then(function(found){
+		tipos = found;
+		knex.select().from("desordem").then(function(desordens){
+				knex.select().from("org_orgao").then(function(orgaos){
+					res.json({
+						desordens : desordens, 
+						tipos : tipos, 
+						orgaos : orgaos, 
+						failed : req.query.failed, 
+						id_desordem : req.query.id_desordem
 					})
-			})
+				})
 		})
+	})
 
-	}else{
-		res.redirect("../../login");
-	}
+
 })
 
 router.put("/desordens/:id",function(req,res){
