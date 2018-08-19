@@ -136,6 +136,40 @@ router.post("/app/inserir/tipodedesordem", function(req, res){
     });
 });
 
+router.post("/app/denuncia/inserir", function(req, res){
+  
+    var usuario = req.body.usuario;
+    var status = req.body.den_status;
+    var descricao = req.body.den_descricao;
+    var anonimato = req.body.den_anonimato;
+    var descricaoDesordem = req.body.desordem;
+    var datahoraregistro = req.body.den_datahora_registro;
+    var datahoraocorreu = req.body.den_datahora_ocorreu;
+    var confiabilidade = req.body.den_nivel_confiabilidade;
+
+    knex('desordem').where({des_descricao : descricaoDesordem}).select().then(function(found){
+        var iddesordem = found[0].des_iddesordem;
+        knex('usuario').where({usu_email : usuario}).select().then(function(usuario){
+            var idusuario = usuario[0].usu_idusuario;
+            knex('denuncia').insert({
+                den_iddesordem : iddesordem,
+                den_idusuario : idusuario,
+                den_datahora_registro : datahoraregistro,
+                den_datahora_ocorreu : datahoraocorreu,
+                den_status : status,
+                den_nivel_confiabilidade : confiabilidade,
+                den_local_desordem : "POINT(" + req.body.den_local_latitude + " " + req.body.den_local_longitude +")",
+                den_descricao : descricao,
+                den_anonimato : anonimato
+            }).then(function(){
+                res.send({sucesso: 'true'});
+            }).catch(function(error){
+                res.send({sucesso: error});
+            });
+        });
+    });
+});
+
 function formatDate(date){
 
     hora = date.getHours();
