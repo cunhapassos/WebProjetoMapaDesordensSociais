@@ -65,6 +65,7 @@ router.post("/denuncias", function(req, res){
     sess =req.session;
 
     datahoraregistro = new Date();
+    datahoraregistro.segundos = datahoraregistro.segundos + 1;
 
     var dataocorreu = req.body.dataocorreu;
     dataocorreu = dataocorreu.replace(/\//g, "-");
