@@ -83,12 +83,14 @@ router.post("/denuncias", function(req, res){
 	var confiabilidade = 1;
 	var descricao = req.body.descricao;
     var anonimato = req.body.anonimato;
+    //var idUsuario = sess.usuario_id;
+    var idUsuario = req.body.idUsuario;
     
     console.log("LATITUDE E LONGITUDE   " + req.body.latitude + " " + req.body.longitude);
 
     knex('denuncia').insert({
         den_iddesordem : desordem,
-        den_idusuario : sess.usuario_id,
+        den_idusuario : idUsuario,
         den_datahora_registro : datahoraregistro,
         den_datahora_ocorreu : datahoraocorreu,
         den_status : status,
@@ -96,8 +98,9 @@ router.post("/denuncias", function(req, res){
         den_local_desordem : "POINT(" + req.body.latitude + " " + req.body.longitude +")",
         den_descricao : descricao,
         den_anonimato : anonimato
-	}).then(function(){
-		res.redirect("../admin");
+	}).then(function(val){
+        console.log(val);
+		res.json(val);
 	}).catch(function(error){
 		console.log(error);
 		res.redirect("admin");
