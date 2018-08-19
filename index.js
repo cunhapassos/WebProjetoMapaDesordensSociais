@@ -73,6 +73,11 @@ app.use(session({
 const st = knexPostgis(knex);
 
 
+app.get("/api", function(req,res){
+	res.render('login', {failed : 0});
+});
+
+
 app.get("/", function(req,res){
 	sess = req.session;
 	
