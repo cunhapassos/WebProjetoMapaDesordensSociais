@@ -33,7 +33,7 @@ router.get("/denuncias/coords", function(req, res){
     
     .then(function(result){
 
-        res.json(result.rows);
+        res.json({denuncias: result.rows });
     
     });
     
