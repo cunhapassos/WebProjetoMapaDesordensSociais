@@ -27,13 +27,15 @@ router.get("/denuncias/:id/show", function(req, res){
 router.get("/denuncias/coords", function(req, res){
 
     knex.raw('select ST_X(den_local_desordem),ST_Y(den_local_desordem), den_status, den_descricao, '
-        +'den_iddenuncia, den_iddesordem, den_idusuario,den_datahora_registro, den_datahora_ocorreu, '
-        +'den_datahora_solucao, den_status, den_nivel_confiabilidade, den_descricao, den_anonimato, '
-        +'from denuncia ')
+    + 'den_iddenuncia, den_iddesordem, den_idusuario,den_datahora_registro, den_datahora_ocorreu, '
+    + 'den_datahora_solucao, den_status, den_nivel_confiabilidade, den_descricao, den_anonimato, '
+    + 'inner join desordem on des_iddesordem = den_iddesordem')
     
     .then(function(result){
 
-        res.json({denuncias: result.rows });
+        res.json({
+            denuncia : result.rows
+        });
     
     });
     
