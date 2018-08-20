@@ -24,7 +24,7 @@ router.get("/denuncias/:id/show", function(req, res){
     
 })
 
-router.get("/denuncias/cordenadas", function(req, res){
+router.get("/denuncias/coords", function(req, res){
 
     knex.raw('select ST_X(den_local_desordem),ST_Y(den_local_desordem), den_status, den_descricao, '
         +'den_iddenuncia, den_iddesordem, den_idusuario,den_datahora_registro, den_datahora_ocorreu, '
