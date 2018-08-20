@@ -29,13 +29,11 @@ router.get("/denuncias/coords", function(req, res){
     knex.raw('select ST_X(den_local_desordem),ST_Y(den_local_desordem), den_status, den_descricao, '
         +'den_iddenuncia, den_iddesordem, den_idusuario,den_datahora_registro, den_datahora_ocorreu, '
         +'den_datahora_solucao, den_status, den_nivel_confiabilidade, den_descricao, den_anonimato, '
-        +'des_descricao '
-        +'from denuncia '
-        +'inner join desordem on des_iddesordem = den_iddesordem')
+        +'from denuncia ')
     
     .then(function(result){
 
-        res.json(result);
+        res.json(result.rows);
     
     });
     
