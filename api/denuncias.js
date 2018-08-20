@@ -14,7 +14,7 @@ router.get("/denuncias/:id/show", function(req, res){
         solucao = formatDate(result.rows[0].den_datahora_solucao);
 
         res.json({
-            denuncia : result.rows, 
+            denuncia : result.rows[0], 
             registro : registro, 
             ocorreu : ocorreu, 
             solucao : solucao
@@ -35,15 +35,8 @@ router.get("/denuncias/cordenadas", function(req, res){
     
     .then(function(result){
 
-        registro = formatDate(result.rows[0].den_datahora_registro);
-        ocorreu = formatDate(result.rows[0].den_datahora_ocorreu);
-        solucao = formatDate(result.rows[0].den_datahora_solucao);
-
         res.json({
-            denuncia : result.rows[0], 
-            registro : registro, 
-            ocorreu : ocorreu, 
-            solucao : solucao
+            denuncia : result.rows
         });
     
     });
