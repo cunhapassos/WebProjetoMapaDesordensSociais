@@ -35,9 +35,7 @@ router.get("/denuncias/cordenadas", function(req, res){
     
     .then(function(result){
 
-        res.json({
-            denuncia : result.rows
-        });
+        res.json(result);
     
     });
     
