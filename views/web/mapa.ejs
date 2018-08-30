@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <!-- <link rel="stylesheet" href="css/materialize.css"> -->
-    <!-- <link rel="stylesheet" type="text/css" href="css/admin.css"> -->
-    <link rel="stylesheet" type="text/css" href="css/mapa.css">
-    <link rel="stylesheet" type="text/css" href="css/semantic.min.css">
-    <!-- <link rel="stylesheet" type="text/css" href="css/style.css"> -->
+    <!-- <link rel="stylesheet" href="../css/materialize.css"> -->
+    <!-- <link rel="stylesheet" type="text/css" href="../css/admin.css"> -->
+    <link rel="stylesheet" type="text/css" href="../css/mapa.css">
+    <link rel="stylesheet" type="text/css" href="../css/semantic.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="../css/style.css"> -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
     integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
@@ -15,8 +15,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css">
-    <script src="js/jquery-3.3.1.min.js"></script>
-    <!-- <script type="text/javascript" src="js/materialize.js"></script> -->
+    <link rel="stylesheet" href="../../css/semantic.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <!-- <script type="text/javascript" src="../js/materialize.js"></script> -->
     
     <style>
        #map {
@@ -27,10 +30,24 @@
   </head>
   <body>
     
-    <%- include templates/sidenav.ejs %>
-
     <main>
-      
+        
+        <div style="z-index: 100;" class="ui visible right sidebar inverted vertical menu">
+        
+        <div class="item">
+          <div class="header"><h4><a id="link-home" href="admin">Settings</a></h4></div>
+        </div>
+    
+        <div class="ui select item">
+            <a id="botao-menu">Visualização <i class="dropdown icon"></i></a>
+            <div id="opcoes" class="menu">
+                <div id="botao-marker" class="item pointer">Marcador</div>
+                <div id="botao-heat" class="item pointer">Mapa de Calor</div>
+            </div>
+        </div>
+        
+        <br>
+        </div>
 <!--       
       <a class="btn-floating btn-large waves-effect waves-light modal-trigger red add" onclick="addMark();"><i class="material-icons" onclick="">add</i></a> -->
       
@@ -41,7 +58,7 @@
       <div id="map" ></div>
       
       <!-- Modal Structure -->
-      <div id="modal1" style="z-index: 100;" class="ui modal">
+      <div id="modal1" style="z-index: 90;" class="ui modal">
         <div class="modal-content">
           <form class="ui form" method="post" action="/denuncias">
       
@@ -106,16 +123,23 @@
           <!-- <button id="hey">asçdfkaçsldfkaçsdlfkçasdlfk</button> -->
     </main>
 
-    <script type="text/javascript" src="js/init_dom.js"></script>
-    <script type="text/javascript" src="js/jquery.mask.js"></script>
-    <script src="../../js/semantic.min.js" ></script>
+    <script type="text/javascript" src="../js/init_dom.js"></script>
+    <script type="text/javascript" src="../js/jquery.mask.js"></script>
+    <script src="../../../js/semantic.min.js" ></script>
     <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
     integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
     crossorigin=""></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.js"></script>
+    <script src="../js/leaflet-heat.js"></script>
     <script type="text/javascript">
 
+        $('.ui.dropdown').dropdown();
+
+        $("#botao-menu").click(function(){
+            $("#opcoes").toggle(300);
+        })
+            
         document.addEventListener('DOMContentLoaded', function() {
           var elems = document.querySelectorAll('.modal');
         });
@@ -221,25 +245,26 @@
 
             editableLayers.addLayer(layer);
         });
-
-
+        
+        var heat_points = []
         var markersGroup = L.markerClusterGroup();
 
         //ADIÇÃO DE MARCADORES NO MAPA
         for(var i = 0; i < markes.length; i++){
-
+          heat_points.push([markes[i].st_x, markes[i].st_y, 7]);
           var marker = L.marker([markes[i].st_x, markes[i].st_y]);
           marker.bindPopup("<b>" + markes[i].den_status + "</b><hr><span>" + markes[i].den_descricao + "</span><br><br><a href=\"/denuncias/" + markes[i].den_iddenuncia + "/show\">Ver denúnica</a>");
           
           markersGroup.addLayer( marker );
-          
-          
         }
+
+         var heat = L.heatLayer(heat_points, {radius: 50});
         
         var latitude;
         var longitude;
         var isMarker;
-
+        
+        // map.addLayer( heat );
         map.addLayer( markersGroup );
         
         //ADIÇÃO DE POLIGONOS NO MAPA
@@ -276,6 +301,16 @@
 
           })
         } 
+
+        $("#botao-marker").on("click", function(){
+            map.addLayer( markersGroup );
+            map.removeLayer( heat );
+        })
+
+        $("#botao-heat").on("click", function(){
+            map.removeLayer( markersGroup );
+            map.addLayer( heat );
+        })
 
 
     </script>
