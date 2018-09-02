@@ -44,6 +44,24 @@ router.get("/denuncias/coords", function(req, res){
     
 })
 
+router.get("/denuncias/coordsA", function(req, res){
+
+    knex.raw('select ST_X(den_local_desordem),ST_Y(den_local_desordem), den_status, den_descricao, '
+    + 'den_iddenuncia, den_iddesordem, den_idusuario,den_datahora_registro, den_datahora_ocorreu, '
+    + 'den_datahora_solucao, den_status, den_nivel_confiabilidade, den_descricao, den_anonimato, '
+    + 'usu_nome, des_descricao '
+    + 'from denuncia '
+    + 'inner join usuario on usu_idusuario = den_idusuario '
+    + 'inner join desordem on des_iddesordem = den_iddesordem')
+    .timeout(500)
+    .then(function(result){
+
+        res.json(result.rows);
+    
+    });
+    
+})
+
 router.get("/denuncias", function(req, res){
         knex.select().from("denuncia").then(function(result){
             knex.select().from("tipo_desordem").then(function(tipos){
