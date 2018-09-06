@@ -62,7 +62,7 @@ router.get("/mapa", function(req,res){
 		polygons_result = result;
 	})
 
-	knex.raw('select ST_X(den_local_desordem),ST_Y(den_local_desordem), den_status, den_descricao, den_iddenuncia from denuncia').then(function(result){
+	knex.raw('select ST_X(den_local_desordem),ST_Y(den_local_desordem), den_status, den_descricao, den_iddenuncia, des_descricao from denuncia inner join desordem on desordem.des_iddesordem = denuncia.den_iddesordem').then(function(result){
 		sess = req.session;
 		res.render('web/mapa', {pontos : result.rows, desordens : desordens_result, polygons : polygons_result, sess : sess, query : req.query});
 	});
@@ -85,7 +85,7 @@ router.post("/login", function(req,res){
 	var email = req.body.email;
 	
 	console.log(email);
-	// senha = md5(senha);
+	senha = md5(senha);
 
 	var name = 0;
 
@@ -122,7 +122,7 @@ router.get("/admin", function(req,res){
 		polygons_result = result;
 	})
 
-	knex.raw('select ST_X(den_local_desordem),ST_Y(den_local_desordem), den_status, den_descricao, den_iddenuncia from denuncia').then(function(result){
+	knex.raw('select ST_X(den_local_desordem),ST_Y(den_local_desordem), den_status, den_descricao, den_iddenuncia, des_descricao, CAST(den_datahora_ocorreu AS DATE) as data_ocorreu, CAST(den_datahora_ocorreu AS TIME) as hora_ocorreu from denuncia inner join desordem on desordem.des_iddesordem = denuncia.den_iddesordem').then(function(result){
 		sess = req.session;
 		res.render('web/admin', {pontos : result.rows, desordens : desordens_result, polygons : polygons_result, sess : sess, query : req.query});
 	});
