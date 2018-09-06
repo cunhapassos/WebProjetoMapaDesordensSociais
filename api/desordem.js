@@ -89,7 +89,7 @@ router.get("/desordens", function(req,res){
 		
 	knex.select().from("tipo_desordem").then(function(found){
 		tipos = found;
-		knex.select().from("desordem").then(function(desordens){
+		knex.select().from("desordem").orderBy("des_descricao").then(function(desordens){
 				knex.select().from("org_orgao").then(function(orgaos){
 					res.json({
 						desordens : desordens, 
@@ -121,5 +121,36 @@ router.put("/desordens/:id",function(req,res){
 		res.redirect("/desordens/"+ req.params.id);
 	})
 })
+
+router.post("/tipodedesordem", function(req, res){
+
+
+    knex.select().from("desordem").orderBy("des_descricao").then(function(tipos){
+                
+        res.send(tipos);            
+    })
+
+});
+
+router.post("/inserir/tipodedesordem", function(req, res){
+
+    var tipo = req.body.tipo;
+    var orgao = req.body.orgao;
+    var descricao = req.body.descricao;
+
+    console.log(tipo);
+    console.log(orgao);
+    console.log(descricao);
+
+    knex('desordem').insert({
+        des_tipo: tipo,
+        des_descricao: descricao,
+        org_idorgao: orgao
+    }).then(function(){
+        res.send({sucesso: 'true'});
+    }).catch(function(error){
+        res.send({sucesso: 'ERRO'});
+    });
+});
 
 module.exports = router;
