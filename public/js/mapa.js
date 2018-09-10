@@ -89,6 +89,10 @@ markes.forEach(function (marker){
           alert("Regiao inserida com sucesso");
           location.reload();
         },
+        error : function(){
+          alert("Você não tem permissão para inserir regiões de alerta");
+          location.reload();
+        }
       });
 
       editableLayers.addLayer(layer);
@@ -116,12 +120,29 @@ markes.forEach(function (marker){
     }
 
     var data_ocorreu = formatDate (markes[i].data_ocorreu); // "18/01/10"
-      
+    
+    //comeca a criar string para pop-pup
+    var marker_popup = "<b>" + markes[i].den_status + "</b><hr><span><strong>Descrição: </strong>" + markes[i].den_descricao + "<br><strong>Nível Confiabilidade: </strong>" + markes[i].den_nivel_confiabilidade + "</span><br><span><strong>Desordem: </strong>" + desordem_descricao  +"<br><span><strong>Data que ocorreu: </strong>" + data_ocorreu + "<br><span><strong>Hora que ocorreu: </strong>" + markes[i].hora_ocorreu  + "<br>";
+
+    //se denuncia foi solucionada, sua hora e data sao colocadas no pop-pup
+    if(markes[i].data_solucao){
+      var data_solucao = formatDate (markes[i].data_solucao);
+
+      marker_popup += "<strong>Data da solução: </strong>" + data_solucao + "<br><strong>Hora Solução: </strong>" + markes[i].hora_solucao + "<br>";
+    }
+
+    //se denuncia nao for anonima, mostra nome do usuario
+    if(markes[i].den_anonimato == 0){
+      marker_popup += "<strong>Usuário: </strong>" + "<a href='/usuarios/" + markes[i].usu_idusuario + "/show'>" + markes[i].usu_nome + "</a><br>";
+    }
+
+    marker_popup += "<br><a href=\"/denuncias/" + markes[i].den_iddenuncia + "/show\">Ver denúnica</a>";
 
     heat_points.push([markes[i].st_x, markes[i].st_y, 7]);
 
     var marker = L.marker([markes[i].st_x, markes[i].st_y]);
-    marker.bindPopup("<b>" + markes[i].den_status + "</b><hr><span><strong>Descrição: </strong>" + markes[i].den_descricao + "</span><br><span><strong>Desordem: </strong>" + desordem_descricao  +"<br><span><strong>Data que ocorreu: </strong>" + data_ocorreu + "<br><span><strong>Data que ocorreu: </strong>" + markes[i].hora_ocorreu  + "<br><br><a href=\"/denuncias/" + markes[i].den_iddenuncia + "/show\">Ver denúnica</a>");
+
+    marker.bindPopup(marker_popup);
     
     markersGroup.addLayer( marker );
   }

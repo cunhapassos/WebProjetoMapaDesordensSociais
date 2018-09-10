@@ -58,12 +58,19 @@ router.get("/denuncias", function(req, res){
 
 router.post("/denuncias/denuncia-status", function(req,res){
     sess = req.session;
+    
+    if (req.body.status == 'Solucionado'){
+        var date = new Date(Date.now()).toUTCString()
+    }else{
+        var date = null;
+    }
 
     if(sess.email){
         knex('denuncia')
             .where('den_iddenuncia', '=', req.body.denunciaid)
             .update({
-            den_status: req.body.status
+            den_status: req.body.status,
+            den_datahora_solucao: date
         }).then(function(){
             res.redirect("/denuncias/" + req.body.denunciaid +"/show");
         })

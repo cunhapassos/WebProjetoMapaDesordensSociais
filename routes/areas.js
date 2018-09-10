@@ -11,15 +11,20 @@ router.post("/areas/create", function(req,res){
     points = points.replace(/\[/g, "(");
     points = points.replace(/\]/g, ")");
 
-    knex('regiao_alerta').insert({
-        usu_idusuario : sess.usuario_id,
-        reg_regiao_alerta : points
-    }).then(function(){
-		res.redirect("../admin");
-	}).catch(function(error){
-		console.log(error);
-		res.redirect("../admin");
-	});
+    if(sess.email){
+
+        knex('regiao_alerta').insert({
+            usu_idusuario : sess.usuario_id,
+            reg_regiao_alerta : points
+        }).then(function(){
+            res.redirect("../admin");
+        }).catch(function(error){
+            console.log(error);
+            res.status(500).send('Something broke!');
+        });
+    }else{
+        res.status(500).send('Você não tem permissão para inserir regiões de alerta');
+    }
 })
 
 module.exports = router;
