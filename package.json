@@ -21,6 +21,7 @@
     "knex-postgis": "^0.6.0",
     "md5": "^2.2.1",
     "method-override": "^2.3.10",
+    "nodemailer": "^4.6.8",
     "nodemon": "^1.17.3",
     "npm": "^6.0.0",
     "pg": "^7.4.1",

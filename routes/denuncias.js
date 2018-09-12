@@ -1,5 +1,6 @@
 var express = require('express');
 var config = require("../config/db.js");
+var enviar_email = require("../controller/email.js");
 var router = express.Router({mergeParams : true});
 db = config.database;
 
@@ -72,6 +73,19 @@ router.post("/denuncias/denuncia-status", function(req,res){
             den_status: req.body.status,
             den_datahora_solucao: date
         }).then(function(){
+
+            knex('usuario').where('usu_idusuario', sess.usuario_id).then(function(usuario_denunciador){
+                
+                var denuncia_registrada;
+                email_denunciador = usuario_denunciador[0].usu_email;
+
+                knex('denuncia').where('den_iddenuncia', req.body.denunciaid).then(function(denuncia){
+                    denuncia_registrada = denuncia;
+
+                    enviar_email(email_denunciador, denuncia_registrada, req.body.status)
+                })
+            })
+
             res.redirect("/denuncias/" + req.body.denunciaid +"/show");
         })
     }else{
