@@ -5,8 +5,12 @@
 }
 
 .sidenav{
-	padding-top: 56px;
+	padding-top: 50px;
 	width: 250px !important;
+}
+
+#sidebarmapa{
+	padding-top: 50px;
 }
 
 #link-home{
