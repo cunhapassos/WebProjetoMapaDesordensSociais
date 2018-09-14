@@ -54,6 +54,15 @@
               <div id="botao-heat" class="item pointer">Mapa de Calor</div>
           </div>
       </div>
+
+      <div class="ui select item">
+          <a id="botao-menu">Status <i class="dropdown icon"></i></a>
+          <div id="opcoes" class="menu">
+              <div id="botao-solucionado" class="item pointer">Solucionado</div>
+              <div id="botao-pendente" class="item pointer">Pendente</div>
+              <div id="botao-semsolucao" class="item pointer">Sem solucção</div>
+          </div>
+      </div>
       
       <br>
       </div>
@@ -257,16 +266,27 @@
         
         var heat_points = []
         var markersGroup = L.markerClusterGroup();
+        var markersSolucionado = [];
 
         //ADIÇÃO DE MARCADORES NO MAPA
         for(var i = 0; i < markes.length; i++){
           heat_points.push([markes[i].st_x, markes[i].st_y, 7]);
-          var marker = L.marker([markes[i].st_x, markes[i].st_y]);
-          marker.bindPopup("<b>" + markes[i].den_status + "</b><hr><span>" + markes[i].den_descricao + "</span><br><br><a href=\"/denuncias/" + markes[i].den_iddenuncia + "/show\">Ver denúnica</a>");
-          
-          markersGroup.addLayer( marker );
-        }
 
+          if(markes[i].den_status == 'Solucionado'){
+            var markerSolucionado = L.marker([markes[i].st_x, markes[i].st_y]);
+            markerSolucionado.bindPopup("<b>" + markes[i].den_status + "</b><hr><span>" + markes[i].den_descricao + "</span><br><br><a href=\"/denuncias/" + markes[i].den_iddenuncia + "/show\">Ver denúnica</a>");
+            markersSolucionado.push(markerSolucionado);
+          }else{
+            var marker = L.marker([markes[i].st_x, markes[i].st_y]);
+            marker.bindPopup("<b>" + markes[i].den_status + "</b><hr><span>" + markes[i].den_descricao + "</span><br><br><a href=\"/denuncias/" + markes[i].den_iddenuncia + "/show\">Ver denúnica</a>");
+            // markersSolucionado.addLayer( marker );
+            markersGroup.addLayer( marker );
+          }
+          
+          
+        }
+        markersSolucionado = L.layerGroup(markersSolucionado);
+          markersGroup.addLayer( markersSolucionado );
          var heat = L.heatLayer(heat_points, {radius: 20});
         
         var latitude;
@@ -274,7 +294,8 @@
         var isMarker;
         
         // map.addLayer( heat );
-        map.addLayer( markersGroup );
+        map.addLayer( markersGroup ); 
+        // map.addLayer( markersSolucionado );
         
         //ADIÇÃO DE POLIGONOS NO MAPA
         for(var i = 0; i < polygons.length; i++){
@@ -321,6 +342,10 @@
             map.addLayer( heat );
         })
 
+        $("#botao-pendente").on("click", function(){
+            markersGroup.removeLayer(markersSolucionado);
+            // map.addLayer( heat );
+        })
 
     </script>
   </body>
