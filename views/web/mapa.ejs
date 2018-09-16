@@ -272,11 +272,12 @@
         for(var i = 0; i < markes.length; i++){
           heat_points.push([markes[i].st_x, markes[i].st_y, 7]);
 
-          if(markes[i].den_status == 'Solucionado'){
+          // if(markes[i].den_status == 'Solucionado'){
             var markerSolucionado = L.marker([markes[i].st_x, markes[i].st_y]);
             markerSolucionado.bindPopup("<b>" + markes[i].den_status + "</b><hr><span>" + markes[i].den_descricao + "</span><br><br><a href=\"/denuncias/" + markes[i].den_iddenuncia + "/show\">Ver denúnica</a>");
             markersSolucionado.push(markerSolucionado);
-          }else{
+          }
+          else{
             var marker = L.marker([markes[i].st_x, markes[i].st_y]);
             marker.bindPopup("<b>" + markes[i].den_status + "</b><hr><span>" + markes[i].den_descricao + "</span><br><br><a href=\"/denuncias/" + markes[i].den_iddenuncia + "/show\">Ver denúnica</a>");
             // markersSolucionado.addLayer( marker );
@@ -286,8 +287,8 @@
           
         }
         markersSolucionado = L.layerGroup(markersSolucionado);
-          markersGroup.addLayer( markersSolucionado );
-         var heat = L.heatLayer(heat_points, {radius: 20});
+        markersGroup.addLayer( markersSolucionado );
+        var heat = L.heatLayer(heat_points, {radius: 20});
         
         var latitude;
         var longitude;
