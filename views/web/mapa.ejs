@@ -314,7 +314,7 @@
             // markersSolucionado.addLayer( marker );
             markersPendente.push(markerPendente );
           }
-          if(markes[i].den_status == "Sem solução" || markes[i].den_status == 'Com problemas'){
+          if(markes[i].den_status == "Sem solução" || markes[i].den_status == 'Com Problemas'){
             var markerSemSolucao = L.marker([markes[i].st_x, markes[i].st_y]);
             marker_popup += "<br><a href=\"/denuncias/" + markes[i].den_iddenuncia + "/show\">Ver denúnica</a>";
             markerSemSolucao.bindPopup(marker_popup);
