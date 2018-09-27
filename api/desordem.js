@@ -1,11 +1,12 @@
 var express = require('express');
 var url = require('url');
+var cors = require('cors');
 var config = require("../config/db.js");
 var router = express.Router({mergeParams : true});
 db = config.database;
 
 var knex = require('knex')(db);
-
+router.use(cors());
 
 router.get("/desordem/new", function(req,res){
 

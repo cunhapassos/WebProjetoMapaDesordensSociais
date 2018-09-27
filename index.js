@@ -5,6 +5,7 @@ var app = express(); //"app" criado para se usar o express
 var pg = require('knex')({client: 'pg'});
 var knexPostgis = require('knex-postgis');
 var methodOverride = require('method-override');
+var cors = require('cors');
 var io = require('socket.io')();
 var http = require('http');
 var expressSanitizer = require("express-sanitizer");
@@ -48,6 +49,8 @@ const st = knexPostgis(knex);
 app.use("/api", require('./api/api-routes'));
 
 app.use("", require('./routes/web-routes.js'));
+
+app.use(cors());
 
 // GeoJSON Feature Collection
 function FeatureCollection(){

@@ -1,5 +1,6 @@
 #map{
     z-index:1;
+    position: absolute !important;
 } /*essa vai ficar por baixo*/
 
 .add.red{

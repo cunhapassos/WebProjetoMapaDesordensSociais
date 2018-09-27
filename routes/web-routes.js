@@ -30,9 +30,11 @@ var areaRouter = require("./areas.js");
 
 router.get("/", function(req,res){
 	sess = req.session;
-	
-	res.redirect("admin");
-	
+	if(sess.email){
+		res.redirect("admin");
+	}else{
+		res.redirect("mapa");
+	}
 });
 
 
@@ -85,7 +87,7 @@ router.post("/login", function(req,res){
 	var email = req.body.email;
 	
 	console.log(email);
-	// senha = md5(senha);
+	senha = md5(senha);
 
 	var name = 0;
 
