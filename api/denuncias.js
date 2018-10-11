@@ -2,6 +2,9 @@ var express = require('express');
 var config = require("../config/db.js");
 var router = express.Router({mergeParams : true});
 db = config.database;
+const fs = require('fs')
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
 
 var knex = require('knex')(db);
 
@@ -24,7 +27,7 @@ router.get("/denuncias/:id/show", function(req, res){
     
 })
 
-router.post("/denuncia/inserir", function(req, res){
+router.post("/denuncia/inserir",  upload.single('image'), function(req, res){
   
     var usuario = req.body.usuario;
     var status = req.body.den_status;
@@ -34,7 +37,9 @@ router.post("/denuncia/inserir", function(req, res){
     var datahoraregistro = req.body.den_datahora_registro;
     var datahoraocorreu = req.body.den_datahora_ocorreu;
     var confiabilidade = req.body.den_nivel_confiabilidade;
+    var idImagem = req.body.img_denuncia_id;
 
+    console.log(req.body.img_denuncia_id)
     knex('desordem').where({des_descricao : descricaoDesordem}).select().then(function(found){
         var iddesordem = found[0].des_iddesordem;
         knex('usuario').where({usu_email : usuario}).select().then(function(usuario){
@@ -49,28 +54,33 @@ router.post("/denuncia/inserir", function(req, res){
                 den_local_desordem : "POINT(" + req.body.den_local_latitude + " " + req.body.den_local_longitude +")",
                 den_descricao : descricao,
                 den_anonimato : anonimato
-            }).then(function(){
-                res.send({sucesso: 'true'});
+            }).then(function(val){
+                if(idImagem != null && idImagem.lengh > 0) {
+                    knex('imagem').insert({
+                            img_iddenuncia : val.den_iddenuncia,
+                            img_idarquivo : idImagem,
+                        }).then( function(img) {
+                            res.json({sucesso: true, body: img});
+                        }).catch(function(e) {
+                            console.log(e)
+                            res.send({sucesso: false, body: e})
+                        })
+                } else {
+                    res.json({sucesso: true, body: val})
+                }
             }).catch(function(error){
                 res.send({sucesso: error});
             });
+        }).catch(function(error){
+            res.send({sucesso: error});
         });
+    }).catch(function(error){
+        res.send({sucesso: error});
     });
 });
 
-router.post('/denuncia/upload/imagem', function(req, res) {
-    console.log(req.files.image.originalFilename);
-    console.log(req.files.image.path);
-    fs.readFile(req.files.image.path, function (err, data){
-        var newPath = "uploads/" + 	req.files.image.originalFilename;
-        fs.writeFile(newPath, data, function (err) {
-            if(err){
-                res.json({'response':"Error"});
-            }else {
-                res.json({'response':"Saved"});
-            }
-        });
-    });
+router.post('/denuncia/upload/imagem', upload.single('image'), function(req, res) {
+    res.json({filename: req.file.filename}).status(200)
 });
 
 
@@ -155,6 +165,7 @@ router.post("/denuncias", function(req, res){
     //datahorasolucao = datasolucao + " " + req.body.horasolucao;
 
     var desordem = req.body.desordem;
+    var idImagem = req.body.img_denuncia_id
     desordem = parseInt(desordem);
 	var status = "Pendente";
 	var confiabilidade = 1;
@@ -176,8 +187,16 @@ router.post("/denuncias", function(req, res){
         den_descricao : descricao,
         den_anonimato : anonimato
 	}).then(function(val){
-        console.log(val);
-		res.json(val);
+        if(idImagem != null && idImagem.lengh > 0) {
+            knex('imagem').insert({
+                    img_iddenuncia : val.den_iddenuncia,
+                    img_idarquivo : idImagem,
+                }).then( function(img_val) {
+                    res.json({val: val, image: img_val});
+                })
+        } else {
+            res.json(val)
+        }
 	}).catch(function(error){
 		console.log(error);
 		res.redirect("admin");
