@@ -1,4 +1,5 @@
 var express = require('express');
+var md5 = require('md5');
 var config = require("../config/db.js");
 var router = express.Router({mergeParams : true});
 db = config.database;
@@ -166,6 +167,7 @@ router.post("/app/login", function(req,res){
 	var senha = req.body.password;
 	var email = req.body.email;
 	
+	senha = md5(senha);
 	console.log(email);
 	console.log(senha);
 
