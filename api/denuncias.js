@@ -27,7 +27,7 @@ router.get("/denuncias/:id/show", function(req, res){
     
 })
 
-router.post("/denuncia/inserir",  upload.single('image'), function(req, res){
+router.post("/denuncia/inserir", function(req, res){
   
     var usuario = req.body.usuario;
     var status = req.body.den_status;
@@ -39,7 +39,6 @@ router.post("/denuncia/inserir",  upload.single('image'), function(req, res){
     var confiabilidade = req.body.den_nivel_confiabilidade;
     var idImagem = req.body.img_denuncia_id;
 
-    console.log(req.body.img_denuncia_id)
     knex('desordem').where({des_descricao : descricaoDesordem}).select().then(function(found){
         var iddesordem = found[0].des_iddesordem;
         knex('usuario').where({usu_email : usuario}).select().then(function(usuario){
@@ -54,15 +53,15 @@ router.post("/denuncia/inserir",  upload.single('image'), function(req, res){
                 den_local_desordem : "POINT(" + req.body.den_local_latitude + " " + req.body.den_local_longitude +")",
                 den_descricao : descricao,
                 den_anonimato : anonimato
-            }).then(function(val){
-                if(idImagem != null && idImagem.lengh > 0) {
+            }).returning('den_iddenuncia').then(function(val){
+                if(idImagem != null && String(idImagem).length > 0) {
                     knex('imagem').insert({
-                            img_iddenuncia : val.den_iddenuncia,
-                            img_idarquivo : idImagem,
+                            img_iddenuncia : parseInt(val[0]),
+                            img_idarquivo : String(idImagem),
                         }).then( function(img) {
+                            console.log("inseriu no campo imagem", img)
                             res.json({sucesso: true, body: img});
                         }).catch(function(e) {
-                            console.log(e)
                             res.send({sucesso: false, body: e})
                         })
                 } else {
@@ -86,9 +85,14 @@ router.post('/denuncia/upload/imagem', upload.single('image'), function(req, res
 
 router.get('/denuncia/uploads/:file', function (req, res){
     file = req.params.file;
-    var img = fs.readFileSync("uploads/" + file);
-    res.writeHead(200, {'Content-Type': 'image/jpg' });
-    res.end(img, 'binary');
+    if(file != null && String(file).length > 0) {
+
+        var img = fs.readFileSync("uploads/" + file);
+        res.writeHead(200, {'Content-Type': 'image/jpg' });
+        res.end(img, 'binary');
+    } else {
+        res.status(404)
+    }
 
 });
 
@@ -124,12 +128,30 @@ router.get("/denuncias/coordsA", function(req, res){
     + 'inner join desordem on des_iddesordem = den_iddesordem')
     .timeout(500)
     .then(function(result){
-
-        res.json(result.rows);
-    
+        res.json(result.rows);   
     });
     
 })
+
+router.get("/denunciasComImagens", function(req, res){
+    knex.raw('select ST_X(den_local_desordem) as latitude,ST_Y(den_local_desordem) as longitude, '
+    + 'den_status, den_descricao, '
+    + 'den_iddenuncia, den_idusuario, '
+    + 'den_nivel_confiabilidade, den_anonimato, '
+    + 'usu_nome, des_descricao, img_idarquivo '
+    + 'from denuncia '
+    + 'inner join usuario on usu_idusuario = den_idusuario '
+    + 'inner join desordem on des_iddesordem = den_iddesordem '
+    + 'LEFT JOIN imagem on img_iddenuncia = den_iddenuncia')
+    .timeout(500)
+    .then(function(result) {
+        res.status(200).json(result.rows)
+    }).catch(function(erro) {
+        console.log(erro)
+    })
+
+})
+
 
 router.get("/denuncias", function(req, res){
         knex.select().from("denuncia").then(function(result){
@@ -146,7 +168,6 @@ router.get("/denuncias", function(req, res){
                 })
             })
         })
-    
 })
 
 router.post("/denuncias", function(req, res){
