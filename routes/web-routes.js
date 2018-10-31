@@ -28,28 +28,33 @@ var denunciaRouter = require("./denuncias.js");
 var gestorRouter = require("./gestor.js");
 var areaRouter = require("./areas.js");
 
+//Rota inicial
 router.get("/", function(req,res){
 	sess = req.session;
+	// Caso o usuário já esteja logado, acessar "admin"
 	if(sess.email){
 		res.redirect("admin");
+	// Caso contrário, acessar "mapa"
 	}else{
 		res.redirect("mapa");
 	}
 });
 
-
+//Tela de login
 router.get("/login", function(req,res){
 	sess = req.session;
-
+	// Caso o usuário não esteja logado
 	if(!sess.email){
 		res.render('web/login', {failed : 0});
 	}
+	// Caso contrário, acessar "admin"
 	else{
 		res.redirect('admin');
 	}
 
 });
 
+//Tela inicial do mapa, sem login realizado
 router.get("/mapa", function(req,res){
 	sess = req.session;
 	
@@ -74,6 +79,7 @@ router.get("/mapa", function(req,res){
 	});
 })
 
+//Logout
 router.get("/logout", function(req,res){
 	req.session.destroy(function(err) {
 		if(err) {
@@ -84,6 +90,7 @@ router.get("/logout", function(req,res){
    })
 })
 
+//Realização de login
 router.post("/login", function(req,res){
 	sess = req.session;
 
@@ -95,13 +102,16 @@ router.post("/login", function(req,res){
 
 	var name = 0;
 
+	//Busca usuario no banco
 	knex('usuario').where({
 		usu_email : email,
 		usu_senha : senha
 	}).select().then(function(usuario){
+		//Caso usuario não seja encontrado
 		if(usuario.length <= 0){
 			res.render("web/login", {failed : 1});
 		}
+		//Caso usuario e senha sejam encontrados
 		else{
 			sess = req.session;
 			sess.email = email;
@@ -113,6 +123,7 @@ router.post("/login", function(req,res){
 	});
 });
 
+//Tela de mapa pós-login
 router.get("/admin", function(req,res){
 	sess = req.session;
 	

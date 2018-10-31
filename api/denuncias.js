@@ -2,6 +2,9 @@ var express = require('express');
 var config = require("../config/db.js");
 var router = express.Router({mergeParams : true});
 db = config.database;
+const fs = require('fs')
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
 
 var knex = require('knex')(db);
 
@@ -34,6 +37,7 @@ router.post("/denuncia/inserir", function(req, res){
     var datahoraregistro = req.body.den_datahora_registro;
     var datahoraocorreu = req.body.den_datahora_ocorreu;
     var confiabilidade = req.body.den_nivel_confiabilidade;
+    var idImagem = req.body.img_denuncia_id;
 
     knex('desordem').where({des_descricao : descricaoDesordem}).select().then(function(found){
         var iddesordem = found[0].des_iddesordem;
@@ -49,14 +53,49 @@ router.post("/denuncia/inserir", function(req, res){
                 den_local_desordem : "POINT(" + req.body.den_local_latitude + " " + req.body.den_local_longitude +")",
                 den_descricao : descricao,
                 den_anonimato : anonimato
-            }).then(function(){
-                res.send({sucesso: 'true'});
+            }).returning('den_iddenuncia').then(function(val){
+                if(idImagem != null && String(idImagem).length > 0) {
+                    knex('imagem').insert({
+                            img_iddenuncia : parseInt(val[0]),
+                            img_idarquivo : String(idImagem),
+                        }).then( function(img) {
+                            console.log("inseriu no campo imagem", img)
+                            res.json({sucesso: true, body: img});
+                        }).catch(function(e) {
+                            res.send({sucesso: false, body: e})
+                        })
+                } else {
+                    res.json({sucesso: true, body: val})
+                }
             }).catch(function(error){
                 res.send({sucesso: error});
             });
+        }).catch(function(error){
+            res.send({sucesso: error});
         });
+    }).catch(function(error){
+        res.send({sucesso: error});
     });
 });
+
+router.post('/denuncia/upload/imagem', upload.single('image'), function(req, res) {
+    res.json({filename: req.file.filename}).status(200)
+});
+
+
+router.get('/denuncia/uploads/:file', function (req, res){
+    file = req.params.file;
+    if(file != null && String(file).length > 0) {
+
+        var img = fs.readFileSync("uploads/" + file);
+        res.writeHead(200, {'Content-Type': 'image/jpg' });
+        res.end(img, 'binary');
+    } else {
+        res.status(404)
+    }
+
+});
+
 
 router.get("/denuncias/coords", function(req, res){
 
@@ -89,12 +128,30 @@ router.get("/denuncias/coordsA", function(req, res){
     + 'inner join desordem on des_iddesordem = den_iddesordem')
     .timeout(500)
     .then(function(result){
-
-        res.json(result.rows);
-    
+        res.json(result.rows);   
     });
     
 })
+
+router.get("/denunciasComImagens", function(req, res){
+    knex.raw('select ST_X(den_local_desordem) as latitude,ST_Y(den_local_desordem) as longitude, '
+    + 'den_status, den_descricao, '
+    + 'den_iddenuncia, den_idusuario, '
+    + 'den_nivel_confiabilidade, den_anonimato, '
+    + 'usu_nome, des_descricao, img_idarquivo '
+    + 'from denuncia '
+    + 'inner join usuario on usu_idusuario = den_idusuario '
+    + 'inner join desordem on des_iddesordem = den_iddesordem '
+    + 'LEFT JOIN imagem on img_iddenuncia = den_iddenuncia')
+    .timeout(500)
+    .then(function(result) {
+        res.status(200).json(result.rows)
+    }).catch(function(erro) {
+        console.log(erro)
+    })
+
+})
+
 
 router.get("/denuncias", function(req, res){
         knex.select().from("denuncia").then(function(result){
@@ -111,7 +168,6 @@ router.get("/denuncias", function(req, res){
                 })
             })
         })
-    
 })
 
 router.post("/denuncias", function(req, res){
@@ -130,6 +186,7 @@ router.post("/denuncias", function(req, res){
     //datahorasolucao = datasolucao + " " + req.body.horasolucao;
 
     var desordem = req.body.desordem;
+    var idImagem = req.body.img_denuncia_id
     desordem = parseInt(desordem);
 	var status = "Pendente";
 	var confiabilidade = 1;
@@ -151,8 +208,16 @@ router.post("/denuncias", function(req, res){
         den_descricao : descricao,
         den_anonimato : anonimato
 	}).then(function(val){
-        console.log(val);
-		res.json(val);
+        if(idImagem != null && idImagem.lengh > 0) {
+            knex('imagem').insert({
+                    img_iddenuncia : val.den_iddenuncia,
+                    img_idarquivo : idImagem,
+                }).then( function(img_val) {
+                    res.json({val: val, image: img_val});
+                })
+        } else {
+            res.json(val)
+        }
 	}).catch(function(error){
 		console.log(error);
 		res.redirect("admin");
@@ -208,5 +273,7 @@ function formatDate(date){
 
 	return date;
 }
+
+
 
 module.exports = router;
