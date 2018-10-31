@@ -60,6 +60,15 @@
               <div id="botao-semsolucao" class="item pointer">Sem solucção</div>
           </div>
       </div>
+
+      <div class="ui select item">
+        <a id="botao-menu">Regiões Administrativas <i class="dropdown icon"></i></a>
+        <div id="opcoes" class="menu">
+          <div id="botao-guara" class="item pointer">Guará</div>
+          <div id="botao-cruzeiro" class="item pointer">Cruzeiro</div>
+          <div id="botao-plano" class="item pointer">Plano Piloto</div>
+        </div>
+      </div>
       
       <br>
       </div>
@@ -165,6 +174,7 @@
         var query = <%-JSON.stringify(query)%>;
         var markes = <%-JSON.stringify(pontos)%>;
         var polygons = <%-JSON.stringify(polygons)%>;
+        var regioes = <%-JSON.stringify(regioes)%>;
 
         markes.forEach(function (marker){
           if(marker.den_iddenuncia == query.denuncia){
@@ -267,6 +277,7 @@
         var markersSolucionado = [];
         var markersPendente = [];
         var markersSemSolucao = [];
+        var markersPlanoPiloto = [];
 
         function formatDate (input) {
           var datePart = input.match(/\d+/g),
@@ -359,6 +370,28 @@
           }).addTo(map);
         }
 
+        function converte_text_array(text){
+          text_aux = text.substr(1, text.length - 2);
+          
+          String.prototype.replaceAll = function(str1, str2, ignore) {
+            return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
+          }
+
+          text_aux = text_aux.replaceAll('),(', ');(');
+          text_split = text_aux.split(';');
+
+          for(var i = 0; i < text_split.length; i++){
+            text_split[i] = text_split[i].replace('(','');
+            text_split[i] = text_split[i].replace(')','');
+            text_split[i] = text_split[i].split(',');
+
+            text_split[i][0] = parseFloat(text_split[i][0]);
+            text_split[i][1] = parseFloat(text_split[i][1]);
+          }    
+
+          return text_split;
+        }
+
 
         //TODA VEZ QUE OCORRE UM DOUBLE CLIQUE NO MAPA, AS VARIÁVEIS RECEBEM LATITUDE E LONGITUDE
         map.on('dblclick', function(e) {
@@ -412,10 +445,98 @@
         })
 
         $("#botao-todas").on("click", function(){
-            markersGroup.addLayer(markersSolucionado);
-            markersGroup.addLayer(markersSemSolucao);
-            markersGroup.addLayer(markersPendente);
+          markersGroup.addLayer(markersSolucionado);
+          markersGroup.addLayer(markersSemSolucao);
+          markersGroup.addLayer(markersPendente);
         })
+
+        $("#botao-guara").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == 'Guara' 
+          })
+
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+        })
+
+        $("#botao-cruzeiro").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == 'Cruzeiro' 
+          })
+
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+        })
+        
+        $("#botao-sobradinho").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == 'sobradinho' 
+          })
+        })
+
+        $("#botao-plano").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == "Plano Piloto"
+          })
+          // console.log(result);
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+          
+        })
+
+
+        $("#botao-samambaia").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == 'samambaia' 
+          })
+        })
+
+        console.log(regioes);
+
+        function filtro_regiao(polygon){
+          for(var i = 0; i < markes.length; i++){
+            coordenadas_marcador = {
+              lat : markes[i].st_x,
+              long : markes[i].st_y
+            };
+          }
+        }
+
+        var latitude;
+
+        function isMarkerInsidePolygon(polyPoints) {
+          console.log(polyPoints);
+          var latitude;
+          var longitude;
+          markersGroup.eachLayer(function (layer) {
+            // if(((layer.getLatLng().lat)= -15.7749913179298) && ((layer.getLatLng().lng)=-47.7952909469605)){
+            //   layer.hide();
+            // }
+            latitude = (layer.getLatLng().lat);
+            longitude = (layer.getLatLng().lng);
+
+            
+
+            var x = latitude, y = longitude;
+            var inside = false;
+            for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
+              console.log("points length : " + polyPoints.length);
+              var xi = polyPoints[i][0], yi = polyPoints[i][1];
+              var xj = polyPoints[j][0], yj = polyPoints[j][1];
+
+              var intersect = ((yi > y) != (yj > y))
+                  && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+              if (intersect) inside = !inside;
+            }
+
+            if(intersect == false){
+
+              newLatLng = new L.LatLng(-900000, -999999999);
+              layer.setLatLng(newLatLng);
+              // layer.setOpacity(0);
+            }
+          });
+
+        };
+
+        
 
     </script>
   </body>
