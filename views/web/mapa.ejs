@@ -67,6 +67,7 @@
           <div id="botao-guara" class="item pointer">Guará</div>
           <div id="botao-cruzeiro" class="item pointer">Cruzeiro</div>
           <div id="botao-plano" class="item pointer">Plano Piloto</div>
+          <div id="botao-parque" class="item pointer">Parque Pinheiros</div>
         </div>
       </div>
       
@@ -354,7 +355,8 @@
         var latitude;
         var longitude;
         var isMarker;
-        
+        var markers_antigos = [];
+        console.log("heyyyy aaa")
         // map.addLayer( heat );
         map.addLayer( markersGroup ); 
         // map.addLayer( markersSolucionado );
@@ -454,7 +456,17 @@
           var result = regioes.filter(regiao => {
             return regiao.nome == 'Guara' 
           })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+        })
 
+        $("#botao-parque").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == 'Parque' 
+          })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
           isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
         })
 
@@ -462,7 +474,8 @@
           var result = regioes.filter(regiao => {
             return regiao.nome == 'Cruzeiro' 
           })
-
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
           isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
         })
         
@@ -476,7 +489,8 @@
           var result = regioes.filter(regiao => {
             return regiao.nome == "Plano Piloto"
           })
-          // console.log(result);
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
           isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
           
         })
@@ -499,12 +513,26 @@
           }
         }
 
-        var latitude;
+        function reajustaMarkers(markers_antigos){
+          var i = 0;
+          markersGroup.eachLayer(function (layer) {
+
+            latitude = (layer.getLatLng().lat);
+            longitude = (layer.getLatLng().lng);
+            var x = latitude, y = longitude;
+
+            if(x == -900000 && y == -999999999){
+              newLatLng = new L.LatLng(markers_antigos[i][0], markers_antigos[i][1]);
+              layer.setLatLng(markers_antigos[i]);
+              i++;
+            }
+          })
+        }
 
         function isMarkerInsidePolygon(polyPoints) {
-          console.log(polyPoints);
           var latitude;
           var longitude;
+          markers_antigos = [];
           markersGroup.eachLayer(function (layer) {
             // if(((layer.getLatLng().lat)= -15.7749913179298) && ((layer.getLatLng().lng)=-47.7952909469605)){
             //   layer.hide();
@@ -515,9 +543,10 @@
             
 
             var x = latitude, y = longitude;
+            
+            
             var inside = false;
             for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
-              console.log("points length : " + polyPoints.length);
               var xi = polyPoints[i][0], yi = polyPoints[i][1];
               var xj = polyPoints[j][0], yj = polyPoints[j][1];
 
@@ -526,14 +555,14 @@
               if (intersect) inside = !inside;
             }
 
-            if(intersect == false){
-
+            if(inside == false){
+              markers_antigos.push([x, y]);
               newLatLng = new L.LatLng(-900000, -999999999);
               layer.setLatLng(newLatLng);
+              // map.removeLayer(layer);
               // layer.setOpacity(0);
             }
           });
-
         };
 
         
