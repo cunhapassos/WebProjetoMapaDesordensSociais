@@ -28,28 +28,33 @@ var denunciaRouter = require("./denuncias.js");
 var gestorRouter = require("./gestor.js");
 var areaRouter = require("./areas.js");
 
+//Rota inicial
 router.get("/", function(req,res){
 	sess = req.session;
+	// Caso o usuário já esteja logado, acessar "admin"
 	if(sess.email){
 		res.redirect("admin");
+	// Caso contrário, acessar "mapa"
 	}else{
 		res.redirect("mapa");
 	}
 });
 
-
+//Tela de login
 router.get("/login", function(req,res){
 	sess = req.session;
-
+	// Caso o usuário não esteja logado
 	if(!sess.email){
 		res.render('web/login', {failed : 0});
 	}
+	// Caso contrário, acessar "admin"
 	else{
 		res.redirect('admin');
 	}
 
 });
 
+//Tela inicial do mapa, sem login realizado
 router.get("/mapa", function(req,res){
 	sess = req.session;
 	
@@ -64,12 +69,17 @@ router.get("/mapa", function(req,res){
 		polygons_result = result;
 	})
 
+	knex.select().from('regioes_administrativas').then(function(result){
+		regioes = result;
+	})
+
 	knex.raw('select ST_X(den_local_desordem),ST_Y(den_local_desordem), den_status, den_descricao, den_anonimato, den_iddenuncia, des_descricao, den_nivel_confiabilidade, CAST(den_datahora_ocorreu AS DATE) as data_ocorreu, CAST(den_datahora_ocorreu AS TIME) as hora_ocorreu, CAST(den_datahora_solucao AS DATE) as data_solucao, CAST(den_datahora_solucao AS TIME) as hora_solucao, usu_nome, usu_idusuario from denuncia inner join desordem on desordem.des_iddesordem = denuncia.den_iddesordem inner join usuario on usuario.usu_idusuario = denuncia.den_idusuario').then(function(result){
 		sess = req.session;
-		res.render('web/mapa', {pontos : result.rows, desordens : desordens_result, polygons : polygons_result, sess : sess, query : req.query});
+		res.render('web/mapa', {pontos : result.rows, desordens : desordens_result, polygons : polygons_result, sess : sess, query : req.query, regioes : regioes});
 	});
 })
 
+//Logout
 router.get("/logout", function(req,res){
 	req.session.destroy(function(err) {
 		if(err) {
@@ -80,6 +90,7 @@ router.get("/logout", function(req,res){
    })
 })
 
+//Realização de login
 router.post("/login", function(req,res){
 	sess = req.session;
 
@@ -91,13 +102,16 @@ router.post("/login", function(req,res){
 
 	var name = 0;
 
+	//Busca usuario no banco
 	knex('usuario').where({
 		usu_email : email,
 		usu_senha : senha
 	}).select().then(function(usuario){
+		//Caso usuario não seja encontrado
 		if(usuario.length <= 0){
 			res.render("web/login", {failed : 1});
 		}
+		//Caso usuario e senha sejam encontrados
 		else{
 			sess = req.session;
 			sess.email = email;
@@ -109,7 +123,7 @@ router.post("/login", function(req,res){
 	});
 });
 
-
+//Tela de mapa pós-login
 router.get("/admin", function(req,res){
 	sess = req.session;
 	
