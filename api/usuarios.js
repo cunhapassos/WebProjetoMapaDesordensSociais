@@ -141,6 +141,22 @@ router.get("/usuarios/:id/show", function(req,res){
 
 })
 
+router.get("/usuarioComImagem/:id", function(req, res){
+
+    knex.raw('select * '
+    + 'from usuario '
+	+ 'LEFT JOIN foto_usuario on fot_idusuario = usu_idusuario '
+	+ 'WHERE usu_idusuario = ' + req.params.id)
+    .timeout(500)
+    .then(function(result) {
+        res.status(200).json(result.rows)
+    }).catch(function(erro) {
+        console.log(erro)
+    })
+
+})
+
+
 router.post('/usuario/upload/imagem', upload.single('image'), function(req, res) {
     res.json({filename: req.file.filename}).status(200)
 });
