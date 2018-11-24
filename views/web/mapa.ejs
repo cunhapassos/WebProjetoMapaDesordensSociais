@@ -35,7 +35,8 @@
       <div style="z-index: 100;" class="ui visible right sidebar inverted vertical menu" id="sidebarmapa">
       
       <div class="item">
-        <div class="header"><h4><a id="link-home" href="admin">Sistema Gerenciador de Desordens</a></h4></div>
+        <a href="/admin"><img src="../../images/Assinatura_Branca.png" style="display: block; margin-left: auto;
+    margin-right: auto; width: 80%; height: 80%;" alt=""></a>
         <div class="menu">
           <% if(!sess.login){ %>
             <a href="/login" class="item">Login</a>
@@ -52,8 +53,8 @@
       </div>
 
       <div class="ui select item">
-          <a id="botao-menu">Status <i class="dropdown icon"></i></a>
-          <div id="opcoes" class="menu">
+          <a id="botao-menu2">Status <i class="dropdown icon"></i></a>
+          <div id="opcoes2" class="menu">
               <div id="botao-todas" class="item pointer">Todas</div>
               <div id="botao-solucionado" class="item pointer">Solucionado</div>
               <div id="botao-pendente" class="item pointer">Pendente</div>
@@ -62,8 +63,8 @@
       </div>
 
       <div class="ui select item">
-        <a id="botao-menu">Regiões Administrativas <i class="dropdown icon"></i></a>
-        <div id="opcoes" class="menu">
+        <a id="botao-menu3">Regiões Administrativas <i class="dropdown icon"></i></a>
+        <div id="opcoes3" class="menu">
           <div id="botao-guara" class="item pointer">Guará</div>
           <div id="botao-cruzeiro" class="item pointer">Cruzeiro</div>
           <div id="botao-plano" class="item pointer">Plano Piloto</div>
@@ -164,6 +165,14 @@
 
         $("#botao-menu").click(function(){
             $("#opcoes").toggle(300);
+        })
+
+        $("#botao-menu2").click(function(){
+            $("#opcoes2").toggle(300);
+        })
+
+        $("#botao-menu3").click(function(){
+            $("#opcoes3").toggle(300);
         })
             
         document.addEventListener('DOMContentLoaded', function() {

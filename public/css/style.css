@@ -72,6 +72,10 @@ td{
 	padding-left: 1%;
 }
 
+.ui.inverted.menu{
+	background: #0D3E1C;
+}
+
 /* .links{
     -webkit-appearance: none;
     color: rgb(0, 0, 0) !important;
