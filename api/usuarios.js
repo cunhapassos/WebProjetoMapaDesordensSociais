@@ -3,6 +3,10 @@ var config = require("../config/db.js");
 var router = express.Router({mergeParams : true});
 db = config.database;
 
+const fs = require('fs')
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/usuario' })
+
 var knex = require('knex')(db);
 monName = new Array ("janeiro", "fevereiro", "março", "abril", "maio", "junho", "agosto", "outubro", "novembro", "dezembro")
 
@@ -34,6 +38,7 @@ router.get("/usuarios", function(req,res){
 })
 
 router.post("/usuarios",function(req,res){
+	console.log(req.body)
 	
 	var login = req.body.login;
 	var senha = req.body.senha;
@@ -44,6 +49,7 @@ router.post("/usuarios",function(req,res){
 	var confia = req.body.confia;
 	var tipo = req.body.tipo;
 	var telefone = req.body.telefone.replace(/[^\d]+/g,''); //remove todos caracteres que nao sao digitos
+	var idImagem = req.body.img_usuario_id;
 
 	var today = new Date();
 	var dd = today.getDate();
@@ -70,14 +76,26 @@ router.post("/usuarios",function(req,res){
 		usu_tipo : tipo,
 		usu_telefone : telefone,
 		usu_data_cadastro : today
-	}).then(function(){
-		res.redirect("../usuarios");
+	}).returning('usu_idusuario').then(function(val){
+		if(idImagem != null && String(idImagem).length > 0) {
+			knex('foto_usuario').insert({
+					fot_idusuario : parseInt(val[0]),
+					fot_idfoto : String(idImagem),
+				}).then( function(img) {
+					console.log("inseriu no campo imagem", img)
+					res.json({sucesso: true, body: img});
+				}).catch(function(e) {
+					res.send({sucesso: false, body: e})
+				})
+		} else {
+			res.json({sucesso: true, body: val})
+		}
 	}).catch(function(error){
-		console.log(error);
-		res.redirect("/usuarios/new");
-	});
+		res.send({sucesso: error});
+	})
 
 })
+
 
 router.post("/usuarios/delete", function(req,res){
 
@@ -123,6 +141,40 @@ router.get("/usuarios/:id/show", function(req,res){
 
 })
 
+router.get("/usuarioComImagem/:id", function(req, res){
+
+    knex.raw('select * '
+    + 'from usuario '
+	+ 'LEFT JOIN foto_usuario on fot_idusuario = usu_idusuario '
+	+ 'WHERE usu_idusuario = ' + req.params.id)
+    .timeout(500)
+    .then(function(result) {
+        res.status(200).json(result.rows)
+    }).catch(function(erro) {
+        console.log(erro)
+    })
+
+})
+
+
+router.post('/usuario/upload/imagem', upload.single('image'), function(req, res) {
+    res.json({filename: req.file.filename}).status(200)
+});
+
+
+router.get('/usuario/uploads/:file', function (req, res){
+    file = req.params.file;
+    if(file != null && String(file).length > 0) {
+
+        var img = fs.readFileSync("uploads/usuario/" + file);
+        res.writeHead(200, {'Content-Type': 'image/jpg' });
+        res.end(img, 'binary');
+    } else {
+        res.status(404)
+    }
+
+});
+
 
 router.put("/usuarios/:id",function(req,res){
 
@@ -145,6 +197,8 @@ router.put("/usuarios/:id",function(req,res){
 		res.redirect("/usuarios/"+ req.params.id + "/edit");
 	})
 })
+
+
 
 function formatDate(date){
 	date = date.toLocaleDateString();

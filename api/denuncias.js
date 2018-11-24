@@ -4,7 +4,7 @@ var router = express.Router({mergeParams : true});
 db = config.database;
 const fs = require('fs')
 var multer  = require('multer')
-var upload = multer({ dest: 'uploads/' })
+var upload = multer({ dest: 'uploads/denuncia' })
 
 var knex = require('knex')(db);
 
@@ -87,7 +87,7 @@ router.get('/denuncia/uploads/:file', function (req, res){
     file = req.params.file;
     if(file != null && String(file).length > 0) {
 
-        var img = fs.readFileSync("uploads/" + file);
+        var img = fs.readFileSync("uploads/denuncia" + file);
         res.writeHead(200, {'Content-Type': 'image/jpg' });
         res.end(img, 'binary');
     } else {
