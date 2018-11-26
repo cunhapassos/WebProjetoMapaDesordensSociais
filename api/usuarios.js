@@ -91,7 +91,7 @@ router.post("/usuarios",function(req,res){
 			res.json({sucesso: true, body: val})
 		}
 	}).catch(function(error){
-		res.send({sucesso: error});
+		res.send({sucesso: false});
 	})
 
 })
