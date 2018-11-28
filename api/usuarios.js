@@ -43,7 +43,7 @@ router.post("/usuarios",function(req,res){
 	var login = req.body.login;
 	var senha = req.body.senha;
 	var email = req.body.email;
-	var nascimento = req.body.nascimento;
+	var nascimento = new Date(req.body.nascimento);
 	var cpf = req.body.cpf.replace(/[^\d]+/g,''); //remove todos caracteres que nao sao digitos
 	var nome = req.body.nome;
 	var confia = req.body.confia;
@@ -51,19 +51,9 @@ router.post("/usuarios",function(req,res){
 	var telefone = req.body.telefone.replace(/[^\d]+/g,''); //remove todos caracteres que nao sao digitos
 	var idImagem = req.body.img_usuario_id;
 
-	var today = new Date();
-	var dd = today.getDate();
-	var mm = today.getMonth()+1; //January is 0!
 
-	var yyyy = today.getFullYear();
-	
-	if(dd<10){
-	    dd='0'+dd;
-	} 
-	if(mm<10){
-	    mm='0'+mm;
-	} 
-	var today = dd+'/'+mm+'/'+yyyy;
+	var today = new Date().toISOString();
+
 
 	knex('usuario').insert({
 		usu_login : login,
@@ -95,7 +85,6 @@ router.post("/usuarios",function(req,res){
 	})
 
 })
-
 
 router.post("/usuarios/delete", function(req,res){
 
