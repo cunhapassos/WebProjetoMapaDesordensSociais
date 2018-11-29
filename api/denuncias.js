@@ -68,13 +68,14 @@ router.post("/denuncia/inserir", function(req, res){
                     res.json({sucesso: true, body: val})
                 }
             }).catch(function(error){
-                res.send({sucesso: error});
+                res.send({sucesso: false});
             });
         }).catch(function(error){
-            res.send({sucesso: error});
+            console.log(error)
+            res.send({sucesso: false});
         });
     }).catch(function(error){
-        res.send({sucesso: error});
+        res.send({sucesso: false});
     });
 });
 
@@ -82,12 +83,11 @@ router.post('/denuncia/upload/imagem', upload.single('image'), function(req, res
     res.json({filename: req.file.filename}).status(200)
 });
 
-
 router.get('/denuncia/uploads/:file', function (req, res){
     file = req.params.file;
     if(file != null && String(file).length > 0) {
 
-        var img = fs.readFileSync("uploads/denuncia" + file);
+        var img = fs.readFileSync("uploads/denuncia/" + file);
         res.writeHead(200, {'Content-Type': 'image/jpg' });
         res.end(img, 'binary');
     } else {
@@ -95,7 +95,6 @@ router.get('/denuncia/uploads/:file', function (req, res){
     }
 
 });
-
 
 router.get("/denuncias/coords", function(req, res){
 
@@ -223,6 +222,45 @@ router.post("/denuncias", function(req, res){
 		res.redirect("admin");
     });
     
+})
+
+router.post("/confirmacao", function(req, res) {
+    var iddenuncia = req.body.iddenuncia;
+    var comentario = req.body.comentario;
+    var confirmacao = req.body.confirmacao;
+    var data_confirmacao = new Date().toISOString();;
+    var idusuario = req.body.idusuario;
+
+    knex('confirmacao').insert({
+        con_iddenuncia : iddenuncia,
+        con_comentario : comentario,
+        con_confirmacao : confirmacao,
+        con_data_confirmacao: data_confirmacao,
+        usu_idusuario: idusuario
+	}).then(function(val){
+        res.status(200).json({sucesso: true, res: val})
+	}).catch(function(error){
+		res.status(error.status).json({sucesso: false, erro: error})
+    });
+})
+
+router.get("/confirmacao/:idUsuario/:idDenuncia", function(req, res){
+
+    var idUsu = req.params.idUsuario
+    var idDen = req.params.idDenuncia
+    console.log(idUsu, idDen)
+
+    knex('confirmacao').where({
+        "confirmacao.con_iddenuncia": idDen,
+        "confirmacao.usu_idusuario": idUsu
+    }).select('con_confirmacao')
+    .timeout(500)
+    .then(function(result) {
+        res.status(200).json(result[0])
+    }).catch(function(erro) {
+        console.log(erro)
+    })
+
 })
 
 function formatDate(date){
