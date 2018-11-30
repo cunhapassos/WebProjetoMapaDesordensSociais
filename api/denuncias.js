@@ -132,6 +132,30 @@ router.get("/denuncias/coordsA", function(req, res){
     
 })
 
+router.get("/denunciasComImagens/:latitude/:longitude", function(req, res){
+    var lat = req.params.latitude
+    var long = req.params.longitude
+
+    knex.raw('select ST_X(den_local_desordem) as latitude,ST_Y(den_local_desordem) as longitude, '
+    + 'den_status, den_descricao, '
+    + 'den_iddenuncia, den_idusuario, '
+    + 'den_nivel_confiabilidade, den_anonimato, '
+    + 'usu_nome, des_descricao, img_idarquivo '
+    + 'from denuncia '
+    + 'inner join usuario on usu_idusuario = den_idusuario '
+    + 'inner join desordem on des_iddesordem = den_iddesordem '
+    + 'LEFT JOIN imagem on img_iddenuncia = den_iddenuncia '
+    + 'WHERE ST_Distance_sphere( st_makepoint( ST_Y(den_local_desordem),ST_X(den_local_desordem)), st_makepoint('+ long+', '+lat+')) < 10000.0'
+    + 'ORDER BY ST_Distance_sphere( st_makepoint( ST_Y(den_local_desordem),ST_X(den_local_desordem)), st_makepoint('+ long+', '+lat+')) '
+    + 'LIMIT 50')
+    .timeout(500)
+    .then(function(result) {
+        res.status(200).json(result.rows)
+    }).catch(function(erro) {
+        console.log(erro)
+    })
+})
+
 router.get("/denunciasComImagens", function(req, res){
     knex.raw('select ST_X(den_local_desordem) as latitude,ST_Y(den_local_desordem) as longitude, '
     + 'den_status, den_descricao, '
@@ -150,6 +174,7 @@ router.get("/denunciasComImagens", function(req, res){
     })
 
 })
+
 
 
 router.get("/denuncias", function(req, res){
@@ -231,29 +256,68 @@ router.post("/confirmacao", function(req, res) {
     var data_confirmacao = new Date().toISOString();;
     var idusuario = req.body.idusuario;
 
-    knex('confirmacao').insert({
-        con_iddenuncia : iddenuncia,
-        con_comentario : comentario,
-        con_confirmacao : confirmacao,
-        con_data_confirmacao: data_confirmacao,
-        usu_idusuario: idusuario
-	}).then(function(val){
-        res.status(200).json({sucesso: true, res: val})
-	}).catch(function(error){
-		res.status(error.status).json({sucesso: false, erro: error})
-    });
+    knex('confirmacao').where({
+        "confirmacao.con_iddenuncia": iddenuncia,
+        "confirmacao.usu_idusuario": idusuario
+    }).select('con_idconfirmacao', 'con_confirmacao')
+    .then(function(row) {
+        if (row[0] == null ) {
+            knex('confirmacao').insert({
+                con_iddenuncia : iddenuncia,
+                con_comentario : comentario,
+                con_confirmacao : confirmacao,
+                con_data_confirmacao: data_confirmacao,
+                usu_idusuario: idusuario
+            }).then(function(val){
+                res.status(200).json({sucesso: true, res: confirmacao})
+            }).catch(function(error){
+                res.status(error.status).json({sucesso: false, erro: error})
+            })
+        } else {
+            
+            if (row[0].con_confirmacao == confirmacao) {
+                knex('confirmacao')
+                .where({
+                    con_idconfirmacao: row[0].con_idconfirmacao
+                })
+                .del()
+                .then(function(val){
+                    res.status(200).json({sucesso: true, res: -1})
+                }).catch(function(error){
+                    res.status(error.status).json({sucesso: false, erro: error})
+                })
+            } else {
+                knex('confirmacao')
+                .where({
+                    con_idconfirmacao: row[0].con_idconfirmacao
+                })
+                .update({
+                    con_confirmacao : confirmacao
+                }).then(function(val){
+                    res.status(200).json({sucesso: true, res: confirmacao})
+                }).catch(function(error){
+                    res.status(error.status).json({sucesso: false, erro: error})
+                })
+            }
+
+
+            
+        }
+    })
+    
+
+    /*;*/
 })
 
 router.get("/confirmacao/:idUsuario/:idDenuncia", function(req, res){
 
     var idUsu = req.params.idUsuario
     var idDen = req.params.idDenuncia
-    console.log(idUsu, idDen)
 
-    knex('confirmacao').where({
-        "confirmacao.con_iddenuncia": idDen,
-        "confirmacao.usu_idusuario": idUsu
-    }).select('con_confirmacao')
+    knex('confirmacao')
+    .where("confirmacao.con_iddenuncia", idDen)
+    .andWhere("confirmacao.usu_idusuario", idUsu)
+    .select('con_confirmacao')
     .timeout(500)
     .then(function(result) {
         res.status(200).json(result[0])
@@ -262,6 +326,15 @@ router.get("/confirmacao/:idUsuario/:idDenuncia", function(req, res){
     })
 
 })
+
+router.get("/condel", function(req, res){
+
+   knex('confirmacao').del().then(function(x) {
+       console.log(x)
+   })
+
+})
+
 
 function formatDate(date){
 
