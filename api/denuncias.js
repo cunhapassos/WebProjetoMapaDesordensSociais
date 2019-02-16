@@ -39,7 +39,7 @@ router.post("/denuncia/inserir", function(req, res){
     var confiabilidade = req.body.den_nivel_confiabilidade;
     var idImagem = req.body.img_denuncia_id;
 
-    knex('desordem').where({des_descricao : descricaoDesordem}).select().then(function(found){
+    knex('desordem').where({des_descricao : descricao}).select().then(function(found){
         var iddesordem = found[0].des_iddesordem;
         knex('usuario').where({usu_email : usuario}).select().then(function(usuario){
             var idusuario = usuario[0].usu_idusuario;
@@ -68,14 +68,14 @@ router.post("/denuncia/inserir", function(req, res){
                     res.json({sucesso: true, body: val})
                 }
             }).catch(function(error){
-                res.send({sucesso: false});
+                res.send({sucesso: false, Error: error});
             });
         }).catch(function(error){
             console.log(error)
-            res.send({sucesso: false});
+            res.send({sucesso: false, Error: error});
         });
     }).catch(function(error){
-        res.send({sucesso: false});
+        res.send({sucesso: false, Error: error});
     });
 });
 
