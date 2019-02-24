@@ -89,10 +89,10 @@ router.post("/denuncia/inserir2", function(req, res){
     var datahoraregistro = req.body.den_datahora_registro;
     var datahoraocorreu = req.body.den_datahora_ocorreu;
     var confiabilidade = req.body.den_nivel_confiabilidade;
-    var imagem1 = req.body.img_nome_0;
-    var imagem2 = req.body.img_nome_1;
-    var imagem3 = req.body.img_nome_2;
-    var imagem4 = req.body.img_nome_3;
+    var imagem0 = req.body.img_nome_0;
+    var imagem1 = req.body.img_nome_1;
+    var imagem2 = req.body.img_nome_2;
+    var imagem3 = req.body.img_nome_3;
 
     knex('desordem').where({des_descricao : descricao}).select().then(function(found){
         var iddesordem = found[0].des_iddesordem;
@@ -114,10 +114,10 @@ router.post("/denuncia/inserir2", function(req, res){
                             img_iddenuncia : parseInt(val[0]),
                             img_nomearquivo : String(imagem0),
                         }).then( function(img) {
-                            console.log("inseriu no campo imagem4", img)
+                            console.log("inseriu no campo imagem0", img)
                             //res.json({sucesso: true, body: img});
                         }).catch(function(e) {
-                            res.send({sucesso: false, body: e})
+                            res.send({sucesso: false, Error: e})
                         })
                 } 
                 if(imagem1 != null && String(imagem1).length > 0) {
@@ -128,7 +128,7 @@ router.post("/denuncia/inserir2", function(req, res){
                             console.log("inseriu no campo imagem1", img)
                             //res.json({sucesso: true, body: img});
                         }).catch(function(e) {
-                            res.send({sucesso: false, body: e})
+                            res.send({sucesso: false, Error: e})
                         })
                 } 
                 if (imagem2 != null && String(imagem2).length > 0) {
@@ -139,7 +139,7 @@ router.post("/denuncia/inserir2", function(req, res){
                             console.log("inseriu no campo imagem2", img)
                             //res.json({sucesso: true, body: img});
                         }).catch(function(e) {
-                            res.send({sucesso: false, body: e})
+                            res.send({sucesso: false, Error: e})
                         })
                 }
                 if (imagem3 != null && String(imagem3).length > 0) {
@@ -150,7 +150,7 @@ router.post("/denuncia/inserir2", function(req, res){
                             console.log("inseriu no campo imagem3", img)
                             //res.json({sucesso: true, body: img});
                         }).catch(function(e) {
-                            res.send({sucesso: false, body: e})
+                            res.send({sucesso: false, Error: e})
                         })
                 }
 
