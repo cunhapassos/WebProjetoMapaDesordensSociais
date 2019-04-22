@@ -69,6 +69,19 @@
           <div id="botao-cruzeiro" class="item pointer">Cruzeiro</div>
           <div id="botao-plano" class="item pointer">Plano Piloto</div>
           <div id="botao-parque" class="item pointer">Parque Pinheiros</div>
+          <div id="botao-gama" class="item pointer">Gama</div>
+          <div id="botao-taguatinga" class="item pointer">Taguatinga</div>
+          <div id="botao-brazlandia" class="item pointer">Brazlândia</div>
+          <div id="botao-sobradinho" class="item pointer">Sobradinho</div>
+          <div id="botao-planaltina" class="item pointer">Planaltina</div>
+          <div id="botao-paranoa" class="item pointer">Paranoá</div>
+          <div id="botao-sudoeste" class="item pointer">Sudoeste</div>
+          <div id="botao-candangolandia" class="item pointer">Candangolândia</div>
+          <div id="botao-sia" class="item pointer">SIA</div>
+          <div id="botao-estrutural" class="item pointer">Estrutural</div>
+          <div id="botao-nb" class="item pointer">Núcleo Bandeirante</div>
+          <div id="botao-aguasclaras" class="item pointer">Águas Claras</div>
+          <div id="botao-vicente" class="item pointer">Vicente Pires</div>
         </div>
       </div>
       
@@ -504,6 +517,135 @@
           
         })
 
+        $("#botao-gama").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == "Gama"
+          })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+          
+        })
+
+        $("#botao-taguatinga").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == "Taguatinga"
+          })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+          
+        })
+
+        $("#botao-brazlandia").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == "Brazlândia"
+          })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+          
+        })
+
+        $("#botao-sobradinho").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == "Sobradinho"
+          })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+          
+        })
+
+        $("#botao-planaltina").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == "Planaltina"
+          })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+          
+        })
+
+        $("#botao-paranoa").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == "Paranoá"
+          })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+          
+        })
+
+        $("#botao-sudoeste").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == "Sudoeste"
+          })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+          
+        })
+
+        $("#botao-candangolandia").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == "Candangolândia"
+          })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+          
+        })
+
+        $("#botao-sia").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == "SIA"
+          })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+          
+        })
+
+        $("#botao-estrutural").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == "Estrutural"
+          })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+          
+        })
+
+        $("#botao-nb").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == "Núcleo Bandeirante"
+          })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+          
+        })
+
+        $("#botao-aguasclaras").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == "Águas Claras"
+          })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+          
+        })
+
+        $("#botao-vicente").on('click', function(){
+          var result = regioes.filter(regiao => {
+            return regiao.nome == "Vicente Pires"
+          })
+          console.log(markers_antigos);
+          reajustaMarkers(markers_antigos)
+          isMarkerInsidePolygon(converte_text_array(result[0].coordenadas));
+          
+        })
 
         $("#botao-samambaia").on('click', function(){
           var result = regioes.filter(regiao => {
