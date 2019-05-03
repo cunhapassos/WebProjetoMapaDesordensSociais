@@ -60,9 +60,14 @@
     if(failed == 1){ %>
 
     <script type="text/javascript">
-      alert("email ou senha incorretos");
+      alert("Email ou senha incorretos");
     </script>
   
+  <% } if(failed == 2){ %>
+     <script type="text/javascript">
+      alert("Você não tem permissão para acessar este sistema!");
+    </script>
+
   <% }} %>
   <script async type="text/javascript" src="../js/bulma.js"></script>
 </body>

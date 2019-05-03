@@ -55,6 +55,8 @@ router.post("/usuarios",function(req,res){
 	var dd = today.getDate();
 	var mm = today.getMonth()+1; //January is 0!
 
+	senha = md5(senha);
+
 	var yyyy = today.getFullYear();
 	
 	if(dd<10){

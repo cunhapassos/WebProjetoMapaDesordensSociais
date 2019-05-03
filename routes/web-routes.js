@@ -110,6 +110,8 @@ router.post("/login", function(req,res){
 		//Caso usuario não seja encontrado
 		if(usuario.length <= 0){
 			res.render("web/login", {failed : 1});
+		}else if(usuario[0].usu_tipo == 3){
+			res.render("web/login", {failed : 2});
 		}
 		//Caso usuario e senha sejam encontrados
 		else{
