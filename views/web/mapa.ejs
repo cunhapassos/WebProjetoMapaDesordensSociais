@@ -40,7 +40,9 @@
         <div class="menu">
           <% if(!sess.login){ %>
             <a href="/login" class="item">Login</a>
-          <% } %>
+          <% }else{ %>
+             <a style="font-size: 100%;" href="/" class="item">Voltar para Página Inicial</a>
+          <%    }   %>
         </div>
       </div>
   

@@ -20,6 +20,7 @@
     
     <style>
        #map {
+        margin: 0px;
         height: 100%;
         width: 100%;
        }
@@ -29,7 +30,8 @@
     
     <%- include ../templates/sidenav.ejs %>
 
-    <main>
+      <div class="pusher" id="map" ></div>
+      <main>
       
 <!--       
       <a class="btn-floating btn-large waves-effect waves-light modal-trigger red add" onclick="addMark();"><i class="material-icons" onclick="">add</i></a> -->
@@ -38,7 +40,6 @@
         <i class="plus icon"></i>
       </button>
       
-      <div id="map" ></div>
       
       <!-- Modal Structure -->
       <div id="modal1" style="z-index: 100;" class="ui modal">
@@ -122,12 +123,15 @@
         document.addEventListener('DOMContentLoaded', function() {
           var elems = document.querySelectorAll('.modal');
         });
+
+        // $('#sidenav-admin').sidebar({context: '#sidenav-admin'}).sidebar('hide');
         
         var marker_zoom_x;
         var marker_zoom_y;
         var query = <%-JSON.stringify(query)%>;
         var markes = <%-JSON.stringify(pontos)%>;
         var polygons = <%-JSON.stringify(polygons)%>;
+        var polygons_ids = <%-JSON.stringify(polygons_ids)%>;
         var sess = <%- JSON.stringify(sess) %>
 
     </script>

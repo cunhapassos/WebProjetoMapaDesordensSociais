@@ -141,9 +141,13 @@ router.get("/admin", function(req,res){
 			polygons_result = result;
 		})
 
+		knex.select('reg_idregiao_alerta').from('regiao_alerta').then(function(result){
+			polygons_ids = result;
+		})
+
 		knex.raw('select ST_X(den_local_desordem),ST_Y(den_local_desordem), den_status, den_descricao, den_anonimato, den_iddenuncia, des_descricao, den_nivel_confiabilidade, CAST(den_datahora_ocorreu AS DATE) as data_ocorreu, CAST(den_datahora_ocorreu AS TIME) as hora_ocorreu, CAST(den_datahora_solucao AS DATE) as data_solucao, CAST(den_datahora_solucao AS TIME) as hora_solucao, usu_nome, usu_idusuario from denuncia inner join desordem on desordem.des_iddesordem = denuncia.den_iddesordem inner join usuario on usuario.usu_idusuario = denuncia.den_idusuario').then(function(result){
 			sess = req.session;
-			res.render('web/admin', {pontos : result.rows, desordens : desordens_result, polygons : polygons_result, sess : sess, query : req.query});
+			res.render('web/admin', {pontos : result.rows, desordens : desordens_result, polygons : polygons_result, polygons_ids : polygons_ids, sess : sess, query : req.query});
 		});
 	}else{
 		res.redirect("/");

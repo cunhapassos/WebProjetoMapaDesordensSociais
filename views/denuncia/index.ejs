@@ -31,7 +31,9 @@
                         <th>Nível de Confiabilidade</th>
                         <th>Descrição</th>
                         <th>Anonimato</th>
+                        <% if(sess.tipo == 3){ %>
                         <th>Excluir</th>
+                        <% } %>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,11 +46,13 @@
                             <td><%= denuncia.den_nivel_confiabilidade %></td>
                             <td><%= denuncia.den_descricao %></td>
                             <td><%= denuncia.den_anonimato %></td>
+                            <% if(sess.tipo == 3){ %>
                             <td>
                                 <button name="id_denuncia" value=<%= denuncia.den_iddenuncia %> class="ui red button">
                                     Deletar
                                 </button>
                             </td>
+                            <% } %>
                         </td>
                         <% } 
                     })%> 

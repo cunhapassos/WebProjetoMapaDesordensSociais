@@ -38,7 +38,7 @@ markes.forEach(function (marker){
   });
   
   var options = {
-    position: 'topright',
+    position: 'bottomleft',
     draw: {
       polygon: {
         allowIntersection: false, // Restricts shapes to simple polygons
@@ -165,6 +165,8 @@ markes.forEach(function (marker){
     var polygon = L.polygon(array_poly,{
       color : 'red'
     }).addTo(map);
+
+    polygon.bindPopup("<strong>Região de Alerta " + polygons_ids[i].reg_idregiao_alerta + "</strong><br><form style='text-align: center;' action='/areas/delete' method='post'><input style='display: none;'  type='number' name='id_regiao' value='" + polygons_ids[i].reg_idregiao_alerta + "' /><input id='delete-regiao' class='ui red button' type='submit' name='delete' value='Delete' /></form>");
   }
 
 

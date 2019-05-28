@@ -27,10 +27,11 @@
 				  	  <th>Picture</th>
 			          <th>Login</th>
 			          <th>Email</th>
-			          <th>Nome</th>
 			          <th>Confiabilidade</th>
-			          <th>Deletar</th>
-					  <th>Editar</th>
+					  <% if(sess.tipo == 3){ %>
+						<th>Deletar</th>
+						<th>Editar</th>
+					  <% } %>
 					  <th>Ver</th>
 			      </tr>
 			    </thead>
@@ -55,8 +56,8 @@
 					<% } %>
 			        <td><%= usuarios[i].usu_login %></td>
 			        <td><%= usuarios[i].usu_email %></td>
-			        <td><%= usuarios[i].usu_nome %></td>
 			    	<td><%= usuarios[i].usu_confiabilidade %></td>
+					<% if(sess.tipo == 3){ %>
 			    	<td>
 			    		<button name="id_usuario" value=<%= usuarios[i].usu_idusuario %> class="ui red button">
 			    			Deletar
@@ -67,6 +68,7 @@
 			    			Editar
 			    		</a>
 					</td>
+					<% } %>
 					<td>
 			    		<a name="id_usuario" href="/usuarios/<%= usuarios[i].usu_idusuario %>/show" class="ui gray button">
 			    			Ver
