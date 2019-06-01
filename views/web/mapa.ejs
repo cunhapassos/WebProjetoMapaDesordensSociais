@@ -23,6 +23,7 @@
     
     <style>
        #map {
+        margin: 0px;
         height: 100%;
         width: 100%;
        }
@@ -30,7 +31,6 @@
   </head>
   <body>
     
-    <main>
 
       <div style="z-index: 100;" class="ui visible left sidebar inverted vertical menu" id="sidebarmapa">
       
@@ -97,7 +97,7 @@
       </button>
       <% } %>
       
-      <div id="map" ></div>
+      <div class="pusher" id="map" ></div>
       
       <!-- Modal Structure -->
       <div id="modal1" style="z-index: 90;" class="ui modal">
@@ -163,7 +163,7 @@
           </div>
 
           <!-- <button id="hey">asçdfkaçsldfkaçsdlfkçasdlfk</button> -->
-    </main>
+    
 
     <script type="text/javascript" src="../js/init_dom.js"></script>
     <script type="text/javascript" src="../js/jquery.mask.js"></script>
@@ -241,7 +241,7 @@
         });
         
         var options = {
-          position: 'topright',
+          position: 'bottomleft',
           draw: {
             polygon: {
               allowIntersection: false, // Restricts shapes to simple polygons
