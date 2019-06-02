@@ -226,6 +226,23 @@ router.get("/denuncias/coordsA", function(req, res){
     
 })
 
+router.get("/denuncias/listadedenuncias", function(req, res){
+
+    knex.raw('select usu_nome, den_anonimato, den_status, den_idusuario, den_iddenuncia, den_descricao, des_descricao, '
+        + 'den_datahora_ocorreu, den_datahora_solucao, den_datahora_registro,'
+        + 'ST_X(den_local_desordem) as latitude,'
+        + 'ST_Y(den_local_desordem) as longitude,' 
+        +  'den_nivel_confiabilidade,'
+        + 'from denuncia '
+        + 'inner join usuario on usu_idusuario = den_idusuario '
+        + 'inner join desordem on des_iddesordem = den_iddesordem')
+    .timeout(500)
+    .then(function(result){
+        res.json(result.rows);   
+    });
+    
+})
+
 router.get("/denunciasComImagens/:latitude/:longitude", function(req, res){
     var lat = req.params.latitude
     var long = req.params.longitude
