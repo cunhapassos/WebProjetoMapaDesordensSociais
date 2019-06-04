@@ -235,8 +235,8 @@ router.get("/denuncias/listadedenuncias", function(req, res){
         + 'den_nivel_confiabilidade '
         + 'from denuncia '
         + 'inner join usuario on usu_idusuario = den_idusuario '
-        + 'inner join desordem on des_iddesordem = den_iddesordem'
-        + 'ORDER BY den_datahora_registro DESC')
+        + 'inner join desordem on des_iddesordem = den_iddesordem '
+        + 'ORDER BY den_datahora_registro desc')
     .timeout(500)
     .then(function(result){
         res.json(result.rows);   
