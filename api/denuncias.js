@@ -38,7 +38,7 @@ router.post("/denuncia/inserir", function(req, res){
     var datahoraocorreu = req.body.den_datahora_ocorreu;
     var confiabilidade = req.body.den_nivel_confiabilidade;
     var idImagem = req.body.img_denuncia_id;
-
+    console.log(req)
     knex('desordem').where({des_descricao : descricao}).select().then(function(found){
         var iddesordem = found[0].des_iddesordem;
         knex('usuario').where({usu_email : usuario}).select().then(function(usuario){
@@ -68,6 +68,7 @@ router.post("/denuncia/inserir", function(req, res){
                     res.json({sucesso: true, body: val})
                 }
             }).catch(function(error){
+
                 res.send({sucesso: false, Error: error});
             });
         }).catch(function(error){
@@ -80,12 +81,13 @@ router.post("/denuncia/inserir", function(req, res){
 });
 
 router.post("/denuncia/inserir2", function(req, res){
-  
+  console.log(req)
+
     var usuario = req.body.usuario;
     var status = req.body.den_status;
     var descricao = req.body.den_descricao;
     var anonimato = req.body.den_anonimato;
-    var descricaoDesordem = req.body.desordem;
+    var descricaoDesordem = req.body.des_descricao;
     var datahoraregistro = req.body.den_datahora_registro;
     var datahoraocorreu = req.body.den_datahora_ocorreu;
     var confiabilidade = req.body.den_nivel_confiabilidade;
@@ -93,8 +95,7 @@ router.post("/denuncia/inserir2", function(req, res){
     var imagem1 = req.body.img_nome_1;
     var imagem2 = req.body.img_nome_2;
     var imagem3 = req.body.img_nome_3;
-
-    knex('desordem').where({des_descricao : descricao}).select().then(function(found){
+        knex('desordem').where({des_descricao : descricaoDesordem}).select().then(function(found){
         var iddesordem = found[0].des_iddesordem;
         knex('usuario').where({usu_email : usuario}).select().then(function(usuario){
             var idusuario = usuario[0].usu_idusuario;
@@ -173,7 +174,7 @@ router.post('/denuncia/upload/imagem', upload.single('image'), function(req, res
 });
 
 router.post('/denuncia/upload/imagems', upload.array('image', 4), function(req, res) {
-    console.log(req)
+    //console.log(req)
     res.json({files: req.files}).status(200)
 });
 
