@@ -164,6 +164,24 @@ router.get('/usuario/uploads/:file', function (req, res){
 
 });
 
+router.post("/usuario/consulta/email", function(req,res){
+
+	var email = req.body.email;
+	
+	console.log(email);
+
+
+	knex('usuario').where({
+		usu_email : email,
+	}).select().then(function(usuario){
+		if(usuario.length <= 0){
+			res.send({sucesso: 'false'});
+		}
+		else{
+			res.send({sucesso: 'true'});
+		}
+	});
+});
 
 router.put("/usuarios/:id",function(req,res){
 
