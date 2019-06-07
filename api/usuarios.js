@@ -164,15 +164,37 @@ router.get('/usuario/uploads/:file', function (req, res){
 
 });
 
-router.post("/usuario/consulta/email", function(req,res){
+router.post("/usuario/consulta/:email", function(req,res){
 
-	var email = req.body.email;
-	
+	var email = req.params.email;
+	console.log(req)
 	console.log(email);
 
 
 	knex('usuario').where({
 		usu_email : email,
+	}).select().then(function(usuario){
+		if(usuario.length <= 0){
+			res.send({sucesso: 'false'});
+		}
+		else{
+			res.send({sucesso: 'true'});
+		}
+	});
+});
+
+router.post("/usuario/login", function(req,res){
+
+	var senha = req.body.password;
+	var email = req.body.email;
+	
+	console.log(email);
+	console.log(senha);
+
+
+	knex('usuario').where({
+		usu_email : email,
+		usu_senha : senha
 	}).select().then(function(usuario){
 		if(usuario.length <= 0){
 			res.send({sucesso: 'false'});
