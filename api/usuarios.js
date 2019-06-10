@@ -192,10 +192,7 @@ router.post("/usuario/login", function(req,res){
 	console.log(senha);
 
 
-	knex('usuario').where({
-		usu_email : email,
-		usu_senha : senha
-	}).select().then(function(usuario){
+	knex.raw('select * from usuario where usu_email=\''+email+'\' and usu_senha=\''+senha+'\'').timeout(2000).then(function(usuario){
 		if(usuario.length <= 0){
 			res.send({sucesso: 'false'});
 		}
