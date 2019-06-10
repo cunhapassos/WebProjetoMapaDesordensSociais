@@ -193,11 +193,12 @@ router.post("/usuario/login", function(req,res){
 
 
 	knex.raw('select * from usuario where usu_email=\''+email+'\' and usu_senha=\''+senha+'\'').timeout(2000).then(function(usuario){
-		if(usuario.length <= 0){
+		if (usuario.rows <= 0){
 			res.send({sucesso: 'false'});
 		}
 		else{
 			res.send({sucesso: 'true'});
+			console.log(usuario);
 		}
 	});
 });
