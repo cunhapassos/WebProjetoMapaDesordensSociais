@@ -254,8 +254,6 @@ router.get("/denuncias/listadedenuncias/area/", function(req, res){
 	var lonC = req.query.lonC
 	var latD = req.query.latD
 	var lonD = req.query.lonD
-	//console.log(req)
-	console.log('WHERE ST_Contains(ST_GeomFromText(\'POLYGON(('+latA +' '+lonA+', '+latB+' '+lonB+', '+latC+' '+lonC+', '+latD+' '+lonD+', '+latA+' '+lonA+'))\'), ST_GeomFromEWKT(den_local_desordem))')
 	
 	  knex.raw('select usu_nome, den_anonimato, den_status, den_idusuario, den_iddenuncia, den_descricao, des_descricao, '
         + 'den_datahora_ocorreu, den_datahora_solucao, den_datahora_registro, '
