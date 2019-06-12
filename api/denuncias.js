@@ -254,7 +254,42 @@ router.get("/denuncias/listadedenuncias/area/", function(req, res){
 	var lonC = req.query.lonC
 	var latD = req.query.latD
 	var lonD = req.query.lonD
-	
+	var status = req.query.status
+	var dataIni = req.query.dataIni
+	var dataFim = req.query.dataFim
+	var natureza = req.query.natureza
+	var aux1 = ''
+
+	var aux2 = ''
+	var aux3 = ''
+
+	console.log(req)
+	console.log(status)
+	if ((typeof dataIni !== 'undefined') && (typeof dataFim !== 'undefined')){
+		console.log("1")
+		aux1 = ' den_datahora_registro BETWEEN \''+dataIni+'\' AND \''+dataFim+'\' AND ' 
+		console.log(aux1)
+	}
+
+	if ((typeof natureza !== 'undefined') && (natureza != 'Todos os tipos')){
+		aux2 = ' and des_descricao =\''+natureza+'\''
+		console.log("2")
+		console.log(natureza)
+	}
+	if ((typeof status !== 'undefined') && (status != 'Todos os status')){
+		aux3 = ' and den_status=\''+status+'\''
+		console.log("3")
+		console.log(status)
+	}
+/*
+	knex.select('usu_nome', 'den_anonimato', 'den_status', 'den_idusuario', 'den_iddenuncia', 'den_descricao', 
+		'des_descricao', 'den_datahora_ocorreu', 'den_datahora_solucao', 'den_datahora_registro', {latitude: knex.raw('ST_X(den_local_desordem)')}, 
+		{longitude: knex.raw('ST_Y(den_local_desordem)')}, 'den_nivel_confiabilidade')
+		.from('denuncia')
+		.innerJoin('usuario', 'usu_idusuario', 'den_idusuario')
+		.innerJoin('desordem', 'des_iddesordem', 'den_iddesordem')
+		.where(knex.raw('ST_Contains(ST_GeomFromText(\'POLYGON(('+latA +' '+lonA+', '+latB+' '+lonB+', '+latC+' '+lonC+', '+latD+' '+lonD+', '+latA+' '+lonA+'))\'), ST_GeomFromEWKT(den_local_desordem))')) 
+*/
 	  knex.raw('select usu_nome, den_anonimato, den_status, den_idusuario, den_iddenuncia, den_descricao, des_descricao, '
         + 'den_datahora_ocorreu, den_datahora_solucao, den_datahora_registro, '
         + 'ST_X(den_local_desordem) as latitude, '
@@ -263,14 +298,21 @@ router.get("/denuncias/listadedenuncias/area/", function(req, res){
         + 'from denuncia '
         + 'inner join usuario on usu_idusuario = den_idusuario '
     	+ 'inner join desordem on des_iddesordem = den_iddesordem '
-        + 'WHERE ST_Contains(ST_GeomFromText(\'POLYGON(('+latA +' '+lonA+', '+latB+' '+lonB+', '+latC+' '+lonC+', '+latD+' '+lonD+', '+latA+' '+lonA+'))\'), ST_GeomFromEWKT(den_local_desordem))'
-        + 'ORDER BY den_datahora_registro desc')
-    .timeout(2000)
-    .then(function(result){
-        res.json(result.rows);   
-    });
+        + 'WHERE '
+        + aux1
+        + 'ST_Contains(ST_GeomFromText(\'POLYGON(('+latA +' '+lonA+', '+latB+' '+lonB+', '+latC+' '+lonC+', '+latD+' '+lonD+', '+latA+' '+lonA+'))\'), ST_GeomFromEWKT(den_local_desordem))'
+        + aux2
+        + aux3
+        + ' ORDER BY den_datahora_registro desc')
+	  	.timeout(1000)
+    	.then(function(result){ 
+    		console.log(result)
+    		res.json(result.rows) 
+    	});
+
     
 })
+
 
 router.get("/denunciasComImagens/:latitude/:longitude", function(req, res){
     var lat = req.params.latitude
