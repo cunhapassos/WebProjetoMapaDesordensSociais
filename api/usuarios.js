@@ -203,6 +203,49 @@ router.post("/usuario/login", function(req,res){
 	});
 });
 
+router.post("/usuario/inserir",function(req,res){
+            
+            
+            var login = req.body.login;
+            var senha = req.body.senha;
+            var email = req.body.email;
+            var nome = req.body.nome;
+            var confia = req.body.confia;
+            var tipo = req.body.tipo;
+
+            knex.raw('select * from usuario where usu_login = \''+login+'\'').timeout(1000).then(function(usuario){
+                console.log(usuario)
+                if (usuario.rows.length > 0){
+                    console.log(usuario.length)
+                    res.json({sucesso: 'false', resposta: 'O email já está cadastrado'});
+                    console.log("O email já está cadastrado! Tente outro email!")
+                             //console.log(res)
+                }
+                else{
+                    knex('usuario').insert({
+                        usu_login : login,
+                        usu_senha : senha,
+                        usu_email : email,
+                        usu_nome : nome,
+                        usu_confiabilidade : confia,
+                        usu_tipo : tipo
+                    }).then(function(){
+                        res.json({sucesso: 'true', resposta: 'cadastro realizado'});
+                        console.log("cadastro realizado com sucesso")
+                        //console.log(res)
+                    }).catch(function(error){
+                        console.log(error);
+                        res.json({sucesso: 'false', resposta: error});
+                        console.log("Passou 3")
+                        //console.log(res)
+                             
+                    });
+                             
+                }})
+            });
+            
+
+
 router.put("/usuarios/:id",function(req,res){
 
 	knex('usuario')
